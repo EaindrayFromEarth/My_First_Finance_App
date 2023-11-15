@@ -29,8 +29,16 @@ namespace My_First_Finance_App.Repositories
 
         public void UpdateCategory(Category category)
         {
-            _context.Categories.Update(category);
-            _context.SaveChanges();
+            var existingCategory = _context.Categories.Find(category.CategoryId);
+
+            if (existingCategory != null)
+            {
+                // Update properties of the existing category with the new values
+                existingCategory.Name = category.Name;
+
+                // Save the changes
+                _context.SaveChanges();
+            }
         }
 
         public void DeleteCategory(int categoryId)

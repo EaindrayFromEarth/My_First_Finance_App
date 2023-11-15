@@ -1,7 +1,10 @@
-﻿using My_First_Finance_App.Models;
+﻿using System.Data.Entity;
+using System.Data.SqlClient;
+using My_First_Finance_App.Models;
 
 namespace My_First_Finance_App.Repositories
 {
+    // TransactionRepository.cs
     public class TransactionRepository : ITransactionRepository
     {
         private readonly ApplicationDbContext _context;
@@ -26,10 +29,9 @@ namespace My_First_Finance_App.Repositories
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
         }
-
         public void UpdateTransaction(Transaction transaction)
         {
-            _context.Transactions.Update(transaction);
+            _context.Entry(transaction).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
@@ -41,6 +43,13 @@ namespace My_First_Finance_App.Repositories
                 _context.Transactions.Remove(transaction);
                 _context.SaveChanges();
             }
+        }
+
+        public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
+        {
+            var sql = "SELECT * FROM Transactions WHERE Amount > @amount";
+            return _context.Database.SqlQuery<Transaction>(sql, new SqlParameter("@amount", amount)).ToList();
+
         }
     }
 

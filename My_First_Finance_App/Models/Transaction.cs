@@ -1,7 +1,11 @@
-﻿namespace My_First_Finance_App.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+
+namespace My_First_Finance_App.Models
 {
     public class Transaction
     {
+        [Key] 
         public int TransactionId { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }

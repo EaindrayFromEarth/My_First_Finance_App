@@ -2,6 +2,7 @@
 
 namespace My_First_Finance_App.Repositories
 {
+    // ITransactionRepository.cs
     public interface ITransactionRepository
     {
         IEnumerable<Transaction> GetAllTransactions();
@@ -9,5 +10,7 @@ namespace My_First_Finance_App.Repositories
         void AddTransaction(Transaction transaction);
         void UpdateTransaction(Transaction transaction);
         void DeleteTransaction(int transactionId);
+        IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount);
     }
+
 }
