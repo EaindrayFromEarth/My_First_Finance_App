@@ -1,4 +1,6 @@
 # My_First_Finance_App
+Note: This in first 8 hours.
+I will fully finish this project before this Saturday.
 
 <h1> Technologies Used</h1>
 
