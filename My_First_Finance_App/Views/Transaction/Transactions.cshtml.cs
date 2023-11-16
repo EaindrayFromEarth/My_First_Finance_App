@@ -7,14 +7,11 @@ using My_First_Finance_App.Models;
 
 namespace My_First_Finance_App.Views.Transaction
 {
-    public class TDetailsModel : PageModel
+    public class TransactionsModel : PageModel
     {
         private readonly My_First_Finance_App.Models.ApplicationDbContext _context;
 
-        public TDetailsModel(My_First_Finance_App.Models.ApplicationDbContext context)
-        {
-            _context = context;
-        }
+
 
         public My_First_Finance_App.Models.Transaction Transaction { get; set; }
 

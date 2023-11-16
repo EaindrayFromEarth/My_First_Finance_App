@@ -35,15 +35,15 @@ namespace My_First_Finance_App.Repositories
             _context.SaveChanges();
         }
 
-        public void DeleteTransaction(int transactionId)
+    public void DeleteTransaction(int transactionId)
+    {
+        var transaction = _context.Transactions.Find(transactionId);
+        if (transaction != null)
         {
-            var transaction = _context.Transactions.Find(transactionId);
-            if (transaction != null)
-            {
-                _context.Transactions.Remove(transaction);
-                _context.SaveChanges();
-            }
+            _context.Transactions.Remove(transaction);
+            _context.SaveChanges();
         }
+    }
 
         public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
         {
