@@ -1,0 +1,19 @@
+﻿@model My_First_Finance_App.Models.User
+
+<h2>User Profile</h2>
+
+<div>
+    <h4>User Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Index">Back to User List</a>
+</p>

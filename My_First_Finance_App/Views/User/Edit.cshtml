@@ -1,0 +1,14 @@
+﻿@model My_First_Finance_App.Models.User
+
+<h2>Edit Profile</h2>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="Username" class="control-label"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save Changes" class="btn btn-primary" />
+    </div>
+</form>

@@ -4,8 +4,11 @@ namespace My_First_Finance_App.Services
 {
     public interface IUserService
     {
+
         User GetUserById(int userId);
-        // Other user-related methods
+        User GetUserByUsername(string username);
+        void UpdateUser(User user);
+        void DeleteUser(int userId);
     }
 
 }

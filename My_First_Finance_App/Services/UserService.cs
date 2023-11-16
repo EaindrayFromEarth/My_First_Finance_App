@@ -6,10 +6,12 @@ namespace My_First_Finance_App.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ApplicationDbContext _context;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, ApplicationDbContext context)
         {
             _userRepository = userRepository;
+            _context = context;
         }
 
         public User GetUserById(int userId)
@@ -17,6 +19,33 @@ namespace My_First_Finance_App.Services
             return _userRepository.GetUserById(userId);
         }
 
-        // Implement other user-related methods
+        public User GetUserByUsername(string username)
+        {
+            return _context.Users.SingleOrDefault(u => u.Username == username);
+        }
+
+        public void UpdateUser(User user)
+        {
+            var existingUser = _context.Users.Find(user.UserId);
+
+            if (existingUser != null)
+            {
+                // Update properties of the existing user with the new values
+                existingUser.Username = user.Username;
+
+                // Save the changes
+                _context.SaveChanges();
+            }
+        }
+
+        public void DeleteUser(int userId)
+        {
+            var user = _context.Users.Find(userId);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+            }
+        }
     }
 }

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<My_First_Finance_App.Models.Transaction>
+
+<h2>Transactions</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Transaction ID</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>User</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model)
+        {
+            <tr>
+                <td>@transaction.TransactionId</td>
+                <td>@transaction.Date.ToShortDateString()</td>
+                <td>@transaction.Amount</td>
+                <td>@transaction.User.Username</td>
+                <td>@transaction.Category.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@transaction.TransactionId">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@transaction.TransactionId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@transaction.TransactionId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p>
+    <a asp-action="Create">Create New Transaction</a>
+</p>

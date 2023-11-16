@@ -1,0 +1,27 @@
+﻿@model My_First_Finance_App.Models.User
+
+<h2>Delete Profile</h2>
+
+<h3>Are you sure you want to delete your profile?</h3>
+<div>
+    <h4>User Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Username)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="UserId" />
+        <div class="form-group">
+            <input type="submit" value="Delete Profile" class="btn btn-danger" />
+        </div>
+    </form>
+</div>
+<p>
+    <a asp-action="Index">Back to User List</a>
+</p>

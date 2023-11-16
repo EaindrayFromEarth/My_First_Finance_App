@@ -1,0 +1,37 @@
+﻿@model My_First_Finance_App.Models.Transaction
+
+<h2>Transaction Details</h2>
+
+<div>
+    <h4>Transaction</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Date.ToShortDateString())
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Username)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Username)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Category.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-action="Index">Back to Transaction List</a>
+</p>
