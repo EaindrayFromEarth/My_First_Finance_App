@@ -31,7 +31,7 @@ namespace My_First_Finance_App.Repositories
         }
         public void UpdateTransaction(Transaction transaction)
         {
-            _context.Entry(transaction).State = EntityState.Modified;
+            _context.Entry(transaction).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
             _context.SaveChanges();
         }
 
@@ -45,12 +45,22 @@ namespace My_First_Finance_App.Repositories
         }
     }
 
+/*        public void UpdateTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
+        }*/
+
         public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
         {
-            var sql = "SELECT * FROM Transactions WHERE Amount > @amount";
-            return _context.Database.SqlQuery<Transaction>(sql, new SqlParameter("@amount", amount)).ToList();
-
+            throw new NotImplementedException();
         }
+
+        /*        public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
+                {
+                    var sql = "SELECT * FROM Transactions WHERE Amount > @amount";
+                    return _context.Database.SqlQuery<Transaction>(sql, new SqlParameter("@amount", amount)).ToList();
+
+                }*/
     }
 
 }
