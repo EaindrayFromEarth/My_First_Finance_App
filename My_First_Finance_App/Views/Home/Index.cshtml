@@ -1,46 +1,52 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<My_First_Finance_App.Models.Category>
 
-<!-- Views/User/Index.cshtml -->
-@model User
+<h2>Categories</h2>
 
-<h1>Welcome, @Model.Username!</h1>
 
-<!-- Add code to display user transactions and categories -->
-<!-- Include Chart.js and create a canvas element for your chart -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<canvas id="myChart" width="400" height="400"></canvas>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">My Finance App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/Category">Categories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/Transaction">Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/User">Users</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-<!-- Add JavaScript to initialize and update the chart -->
-<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Category 1', 'Category 2', 'Category 3'], // Add your category names
-            datasets: [{
-                label: 'Spending Amount',
-                data: [100, 200, 150], // Add your spending amounts
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.CategoryId</td>
+                <td>@category.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@category.CategoryId">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@category.CategoryId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@category.CategoryId">Delete</a>
+                </td>
+            </tr>
         }
-    });
-</script>
+    </tbody>
+</table>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
