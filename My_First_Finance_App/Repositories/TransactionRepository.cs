@@ -20,11 +20,17 @@ namespace My_First_Finance_App.Repositories
         {
             return _context.Transactions.Include(t => t.User).Include(t => t.Category).ToList();
         }
-
         public Transaction GetTransactionById(int transactionId)
         {
-            return _context.Transactions.Find(transactionId);
+            return _context.Transactions.Include(t => t.User).Include(t => t.Category)
+                .FirstOrDefault(t => t.TransactionId == transactionId);
         }
+
+
+        /*        public Transaction GetTransactionById(int transactionId)
+                {
+                    return _context.Transactions.Find(transactionId);
+                }*/
 
         public void AddTransaction(Transaction transaction)
         {

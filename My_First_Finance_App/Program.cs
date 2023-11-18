@@ -38,15 +38,26 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-// Startup.cs
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 app.MapControllerRoute(
     name: "category",
     pattern: "Category/{action=Index}/{id?}",
     defaults: new { controller = "Category" });
+
+app.MapControllerRoute(
+    name: "user",
+    pattern: "User/{action=Login}/{id?}",
+    defaults: new { controller = "User" });
+
+app.MapControllerRoute(
+    name: "user_profile",
+    pattern: "User/ProfileDetails/{userId}",
+    defaults: new { controller = "User", action = "ProfileDetails" });
+
 
 app.Run();

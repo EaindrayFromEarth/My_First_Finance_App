@@ -17,6 +17,7 @@ public class TransactionController : Controller
         return View(transactions);
     }
 
+    [HttpGet]
     public IActionResult Details(int transactionId)
     {
         var transaction = _transactionService.GetTransactionById(transactionId);
