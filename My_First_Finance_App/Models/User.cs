@@ -1,4 +1,6 @@
-﻿using System.Transactions;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace My_First_Finance_App.Models
 {

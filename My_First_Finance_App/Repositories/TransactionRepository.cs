@@ -1,7 +1,9 @@
-﻿using System.Data.Entity;
+﻿using System;
+using Microsoft.EntityFrameworkCore; // Add this line
+using System.Linq;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using My_First_Finance_App.Models;
-
 namespace My_First_Finance_App.Repositories
 {
     // TransactionRepository.cs
@@ -26,9 +28,39 @@ namespace My_First_Finance_App.Repositories
 
         public void AddTransaction(Transaction transaction)
         {
+            // Check if the user exists
+            var userExists = _context.Users.Any(u => u.UserId == transaction.UserId);
+
+            if (!userExists)
+            {
+                // Handle the scenario where the user doesn't exist
+                throw new InvalidOperationException("User does not exist.");
+            }
+
+            // If the user exists, proceed to add the transaction
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
         }
+
+
+        /*        public void AddTransaction(Transaction transaction)
+                {
+                    // Check if the user with the specified UserId exists
+                    var user = _context.Users.Find(transaction.UserId);
+                    if (user == null)
+                    {
+                        // Handle the case where the user does not exist
+                        // You might throw an exception or handle it appropriately
+                        throw new InvalidOperationException("User does not exist.");
+                    }
+
+                    // If the user exists, add the transaction
+                    _context.Transactions.Add(transaction);
+                    _context.SaveChanges();
+                }*/
+
+
+
         public void UpdateTransaction(Transaction transaction)
         {
             _context.Entry(transaction).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;

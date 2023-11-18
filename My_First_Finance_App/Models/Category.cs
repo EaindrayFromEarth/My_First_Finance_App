@@ -1,4 +1,6 @@
-﻿namespace My_First_Finance_App.Models
+﻿using System.Collections.Generic;
+
+namespace My_First_Finance_App.Models
 {
     public class Category
     {

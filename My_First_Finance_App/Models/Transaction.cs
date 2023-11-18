@@ -1,17 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace My_First_Finance_App.Models
 {
     public class Transaction
     {
-        [Key] 
+        [Key]
         public int TransactionId { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
-        // Other transaction-related properties
+
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
+
+        [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using My_First_Finance_App.Models;
 using My_First_Finance_App.Repositories;
+using System.Data.Entity;
 
 namespace My_First_Finance_App.Services
 {
@@ -16,7 +17,9 @@ namespace My_First_Finance_App.Services
 
         public User GetUserById(int userId)
         {
-            return _userRepository.GetUserById(userId);
+            return _context.Users
+                .Include(u => u.Transactions) // Include Transactions to load them along with the user
+                .SingleOrDefault(u => u.UserId == userId);
         }
 
         public User GetUserByUsername(string username)

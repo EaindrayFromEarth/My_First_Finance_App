@@ -18,5 +18,31 @@ namespace My_First_Finance_App.Models
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure relationships using Fluent API
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Category)
+                .WithMany(c => c.Transactions)
+                .HasForeignKey(t => t.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+        /*        protected override void OnModelCreating(ModelBuilder modelBuilder)
+                {
+                    modelBuilder.Entity<Transaction>()
+                        .HasOne(t => t.User)
+                        .WithMany(u => u.Transactions)
+                        .HasForeignKey(t => t.UserId);
+
+                    // Add similar configurations for other relationships (e.g., Category)
+                }*/
+
     }
 }
