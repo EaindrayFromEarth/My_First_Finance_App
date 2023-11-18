@@ -1,52 +1,69 @@
 ﻿@model IEnumerable<My_First_Finance_App.Models.Category>
 
-<h2>Categories</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Categories</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">My Finance App</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Transaction" asp-action="Index">Transactions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="User" asp-action="Index">Users</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <p>
+        <a class="btn btn-success" asp-action="Create">Create New</a>
+    </p>
+    <div class="container mt-4">
+        <h2>Categories</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Category ID</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    <tr>
+                        <td>@category.CategoryId</td>
+                        <td>@category.Name</td>
+                        <td>
+                            <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@category.CategoryId">Details</a>
+                            <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@category.CategoryId">Edit</a>
+                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@category.CategoryId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">My Finance App</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Transaction" asp-action="Index">Transactions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="User" asp-action="Index">Users</a>
-            </li>
-        </ul>
     </div>
-</nav>
 
+    <!-- Bootstrap JS and jQuery (needed for Bootstrap functionality) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Category ID</th>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var category in Model)
-        {
-            <tr>
-                <td>@category.CategoryId</td>
-                <td>@category.Name</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@category.CategoryId">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@category.CategoryId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@category.CategoryId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+</body>
+</html>

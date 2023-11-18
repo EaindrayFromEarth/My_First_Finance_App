@@ -1,36 +1,202 @@
 ﻿@model IEnumerable<My_First_Finance_App.Models.Transaction>
 
-<h2>Transactions</h2>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Transactions</title>
+	<!-- Chart.js -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Transaction ID</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>User</th>
-            <th>Category</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var transaction in Model)
-        {
-            <tr>
-                <td>@transaction.TransactionId</td>
-                <td>@transaction.Date.ToShortDateString()</td>
-                <td>@transaction.Amount</td>
-                <td>@transaction.User.Username</td>
-                <td>@transaction.Category.Name</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@transaction.TransactionId">Details</a>
-                    <a asp-action="Edit" asp-route-id="@transaction.TransactionId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@transaction.TransactionId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<p>
-    <a asp-action="Create">Create New Transaction</a>
-</p>
+	<!-- Bootstrap Table CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.css">
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Bootstrap JS -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+	<!-- Bootstrap Table JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
+	<!-- List.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+
+</head>
+<body>
+
+	<div class="container mt-4">
+		<h2>Transactions</h2>
+		<input class="form-control" id="search" placeholder="Search">
+
+		<p>
+			<a class="btn btn-success" data-toggle="table" asp-action="Create">Create New Transaction</a>
+		</p>
+		<table id="transactionsTable" class="table table-striped">
+			<thead>
+				<tr>
+					<th>Transaction ID</th>
+					<th>Date</th>
+					<th>Amount</th>
+					<th>User</th>
+					<th>Category</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var transaction in Model)
+				{
+					<tr>
+						<td>@transaction.TransactionId</td>
+						<td>@transaction.Date.ToShortDateString()</td>
+						<td>@transaction.Amount</td>
+						<td>@transaction.User.Username</td>
+						<td>@transaction.Category.Name</td>
+						<td>
+							<a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@transaction.TransactionId">Details</a>
+							<a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@transaction.TransactionId">Edit</a>
+							<a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@transaction.TransactionId">Delete</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+
+		<!-- Transaction Amounts by Category (Donut Chart) -->
+		<div style="width: 300px; height: 300px; display: inline-block;">
+			<canvas id="transactionAmountsByCategoryChart"></canvas>
+		</div>
+
+		<!-- Monthly Expense Trend (Line Chart) -->
+		<div style="width: 400px; height: 200px; display: inline-block;">
+			<canvas id="monthlyExpenseChart"></canvas>
+		</div>
+		<!-- Transaction Count by User (Bar Chart) -->
+		<div style="width: 600px; height: 300px; display: inline-block;">
+			<canvas id="transactionCountByUserChart"></canvas>
+		</div>
+	</div>
+
+
+	<script>
+		var transactionAmountsByCategoryData = {
+			labels: [],  // Category labels
+			datasets: [{
+				data: [],
+				backgroundColor: ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)'],
+				borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)'],
+				borderWidth: 1
+			}]
+		};
+
+		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+			var columns = row.children;
+			transactionAmountsByCategoryData.labels.push(columns[4].textContent);  // Assuming Category is in the fifth column
+			transactionAmountsByCategoryData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
+		});
+
+		var transactionAmountsByCategoryChart = new Chart(document.getElementById('transactionAmountsByCategoryChart'), {
+			type: 'doughnut',
+			data: transactionAmountsByCategoryData,
+			options: {
+				plugins: {
+					legend: { display: true, position: 'right' },
+					title: { display: true, text: 'Transaction Amounts by Category' }
+				}
+			}
+		});
+	</script>
+	<script>
+		var monthlyExpenseData = {
+			labels: [],  // Month labels
+			datasets: [{
+				label: 'Monthly Expense Trend',
+				data: [],
+				fill: false,
+				borderColor: 'rgb(75, 192, 192)',
+				tension: 0.1
+			}]
+		};
+
+		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+			var columns = row.children;
+			monthlyExpenseData.labels.push(columns[1].textContent);  // Assuming Date is in the second column
+			monthlyExpenseData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
+		});
+
+		var monthlyExpenseChart = new Chart(document.getElementById('monthlyExpenseChart'), {
+			type: 'line',
+			data: monthlyExpenseData,
+			options: {
+				scales: {
+					x: { title: { display: true, text: 'Month' } },
+					y: { title: { display: true, text: 'Amount' } }
+				}
+			}
+		});
+	</script>
+	<script>
+		var transactionCountByUserData = {
+			labels: [],  // User labels
+			datasets: [{
+				label: 'Transaction Count by User',
+				data: [],
+				backgroundColor: 'rgba(75, 192, 192, 0.2)',
+				borderColor: 'rgba(75, 192, 192, 1)',
+				borderWidth: 1
+			}]
+		};
+
+		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+			var columns = row.children;
+			transactionCountByUserData.labels.push(columns[3].textContent);  // Assuming User is in the fourth column
+			transactionCountByUserData.datasets[0].data.push(1);  // Increment count for each row
+		});
+
+		var transactionCountByUserChart = new Chart(document.getElementById('transactionCountByUserChart'), {
+			type: 'bar',
+			data: transactionCountByUserData,
+			options: {
+				scales: {
+					x: { title: { display: true, text: 'User' } },
+					y: { beginAtZero: true, title: { display: true, text: 'Transaction Count' } }
+				}
+			}
+		});
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var options = {
+				valueNames: ['Transaction ID', 'Date', 'Amount', 'User', 'Category']  // Add class names for each column
+			};
+
+			var transactionList = new List('transactionsTable', options);
+		});
+	</script>
+
+
+	@*     <script>
+	$(document).ready(function () {
+	$('#transactionsTable').bootstrapTable({
+	pagination: true,  // Enable pagination
+	search: true,  // Enable search bar
+	showColumns: true,  // Show/hide columns
+	showToggle: true,  // Show/hide table
+	showPaginationSwitch: true,  // Show/hide pagination
+	showRefresh: true,  // Show/hide refresh button
+	showFullscreen: true  // Show/hide fullscreen button
+	});
+	});
+	</script> *@
+
+
+	<!-- Bootstrap JS and jQuery (needed for Bootstrap functionality) -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>
