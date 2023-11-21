@@ -1,6 +1,5 @@
-# My_First_Finance_App
-Note: This in first 8 hours.
-I will fully finish this project before this Saturday.
+# Monthly Expense Tracker (My_First_Finance_App)
+I'm still learning as always. 
 
 If you liked it, Add a Star 🌟 to this 👆 Repository.
 
