@@ -8,8 +8,7 @@ If you liked it, Add a Star 🌟 to this 👆 Repository.
 - .Net 7, Mvc pattern, C#, 
 - Entity Framework Core
 
-- HTML, CSS
--JavaScript, Bootstrap
+- HTML, CSS ,JavaScript, Bootstrap
 
 ![alt text](https://github.com/EaindrayFromEarth/My_First_Finance_App/blob/master/Web%20capture_30-11-2023_24642_localhost.jpeg?raw=true)
 
