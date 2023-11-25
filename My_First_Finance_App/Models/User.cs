@@ -10,5 +10,7 @@ namespace My_First_Finance_App.Models
         public string Username { get; set; }
         // Other user-related properties
         public List<Transaction> Transactions { get; set; }
-    }
+		// New property for salary
+		//public List<IncomeType> Incomes { get; set; }
+	}
 }

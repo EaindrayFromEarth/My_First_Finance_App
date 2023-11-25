@@ -30,7 +30,7 @@
 
     <div class="container mt-4">
         <h2>Edit Category</h2>
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" asp-route-categoryId="@Model.CategoryId" method="post">
             <div class="form-group">
                 <label asp-for="Name" class="control-label">Category Name:</label>
                 <input asp-for="Name" class="form-control" />

@@ -17,5 +17,13 @@ namespace My_First_Finance_App.Models
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-    }
+
+
+	/*	[ForeignKey("IncomeType")]
+		public int? IncomeTypeId { get; set; } // Nullable as not all transactions may be associated with an income type
+		public IncomeType IncomeType { get; set; }
+
+		// New property for salary
+		public decimal Salary { get; set; }*/
+	}
 }

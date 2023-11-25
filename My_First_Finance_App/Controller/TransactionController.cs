@@ -2,6 +2,7 @@
 using My_First_Finance_App.Models;
 using My_First_Finance_App.Services;
 
+//[Route("[controller]")]
 public class TransactionController : Controller
 {
     private readonly ITransactionService _transactionService;
@@ -17,18 +18,20 @@ public class TransactionController : Controller
         return View(transactions);
     }
 
-    [HttpGet]
-    public IActionResult Details(int transactionId)
-    {
-        var transaction = _transactionService.GetTransactionById(transactionId);
+	[HttpGet]
+	public IActionResult Details(int transactionId)
+	{
+		var transaction = _transactionService.GetTransactionById(transactionId);
 
-        if (transaction == null)
-            return NotFound();
+		if (transaction == null)
+			return NotFound();
 
-        return View(transaction);
-    }
+		return View(transaction);
+	}
 
-    [HttpGet]
+
+
+	[HttpGet]
     public IActionResult Create()
     {
         return View();
@@ -44,39 +47,46 @@ public class TransactionController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet]
-    public IActionResult Edit(int transactionId)
-    {
-        var transaction = _transactionService.GetTransactionById(transactionId);
+	[HttpGet]
+	//[Route("Edit/{transactionId}")]
+	public IActionResult Edit(int transactionId)
+	{
+		var transaction = _transactionService.GetTransactionById(transactionId);
 
-        if (transaction == null)
-            return NotFound();
+		if (transaction == null)
+		{
+			return NotFound();
+		}
 
-        return View(transaction);
-    }
+		return View(transaction);
+	}
 
-    [HttpPost]
-    public IActionResult Edit(Transaction transaction)
-    {
-        if (transaction == null)
-            return BadRequest();
+	[HttpPost]
+	public IActionResult Edit(Transaction transaction)
+	{
+		if (transaction == null)
+		{
+			return BadRequest();
+		}
 
-        _transactionService.UpdateTransaction(transaction);
-        return RedirectToAction(nameof(Index));
-    }
+		_transactionService.UpdateTransaction(transaction);
+		return RedirectToAction(nameof(Index));
+	}
 
-    [HttpGet]
-    public IActionResult Delete(int transactionId)
-    {
-        var transaction = _transactionService.GetTransactionById(transactionId);
+	[HttpGet]
+	public IActionResult Delete(int transactionId)
+	{
+		var transaction = _transactionService.GetTransactionById(transactionId);
 
-        if (transaction == null)
-            return NotFound();
+		if (transaction == null)
+		{
+			return NotFound();
+		}
 
-        return View(transaction);
-    }
+		return View(transaction);
+	}
 
-    [HttpPost, ActionName("Delete")]
+	[HttpPost, ActionName("Delete")]
     public IActionResult ConfirmDelete(int transactionId)
     {
         _transactionService.DeleteTransaction(transactionId);

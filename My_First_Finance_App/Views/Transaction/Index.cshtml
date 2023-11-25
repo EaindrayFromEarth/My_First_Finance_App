@@ -54,9 +54,9 @@
 						<td>@transaction.User.Username</td>
 						<td>@transaction.Category.Name</td>
 						<td>
-							<a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@transaction.TransactionId">Details</a>
-							<a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@transaction.TransactionId">Edit</a>
-							<a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@transaction.TransactionId">Delete</a>
+							<a class="btn btn-info btn-sm" asp-controller="Transaction" asp-action="Details" asp-route-transactionId="@transaction.TransactionId">Details</a>
+							<a class="btn btn-warning btn-sm" asp-controller="Transaction" asp-action="Edit" asp-route-transactionId="@transaction.TransactionId">Edit</a>
+							<a class="btn btn-danger btn-sm" asp-controller="Transaction" asp-action="Delete" asp-route-transactionId="@transaction.TransactionId">Delete</a>
 						</td>
 					</tr>
 				}
@@ -132,7 +132,9 @@
 			options: {
 				scales: {
 					x: { title: { display: true, text: 'Month' } },
-					y: { title: { display: true, text: 'Amount' } }
+					y: { title: { display: true, text: 'Amount' },
+						beginAtZero: true // Start Y-axis from zero
+					 }
 				}
 			}
 		});

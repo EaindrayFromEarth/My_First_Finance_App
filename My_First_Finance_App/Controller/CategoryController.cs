@@ -2,6 +2,7 @@
 using My_First_Finance_App.Models;
 using My_First_Finance_App.Services;
 
+
 public class CategoryController : Controller
 {
     private readonly ICategoryService _categoryService;
@@ -17,6 +18,7 @@ public class CategoryController : Controller
         return View(categories);
     }
 
+    [HttpGet]
     public IActionResult Details(int categoryId)
     {
         var category = _categoryService.GetCategoryById(categoryId);

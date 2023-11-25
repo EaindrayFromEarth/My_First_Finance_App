@@ -2,7 +2,7 @@
 
 <h2>Edit Transaction</h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" asp-route-id="@Model.TransactionId" method="post">
     <div class="form-group">
         <label asp-for="Date" class="control-label"></label>
         <input asp-for="Date" class="form-control" />

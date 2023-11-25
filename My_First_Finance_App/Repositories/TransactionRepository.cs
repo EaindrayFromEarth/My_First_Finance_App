@@ -20,17 +20,12 @@ namespace My_First_Finance_App.Repositories
         {
             return _context.Transactions.Include(t => t.User).Include(t => t.Category).ToList();
         }
+
+
         public Transaction GetTransactionById(int transactionId)
         {
-            return _context.Transactions.Include(t => t.User).Include(t => t.Category)
-                .FirstOrDefault(t => t.TransactionId == transactionId);
+            return _context.Transactions.Find(transactionId);
         }
-
-
-        /*        public Transaction GetTransactionById(int transactionId)
-                {
-                    return _context.Transactions.Find(transactionId);
-                }*/
 
         public void AddTransaction(Transaction transaction)
         {
@@ -49,7 +44,7 @@ namespace My_First_Finance_App.Repositories
         }
 
 
-        /*        public void AddTransaction(Transaction transaction)
+		/*        public void AddTransaction(Transaction transaction)
                 {
                     // Check if the user with the specified UserId exists
                     var user = _context.Users.Find(transaction.UserId);
@@ -65,15 +60,19 @@ namespace My_First_Finance_App.Repositories
                     _context.SaveChanges();
                 }*/
 
+		public void UpdateTransaction(Transaction transaction)
+		{
+			_context.Transactions.Update(transaction);
+			_context.SaveChanges();
+		}
 
+		/*        public void UpdateTransaction(Transaction transaction)
+				{
+					_context.Entry(transaction).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
+					_context.SaveChanges();
+				}*/
 
-        public void UpdateTransaction(Transaction transaction)
-        {
-            _context.Entry(transaction).State = (Microsoft.EntityFrameworkCore.EntityState)EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-    public void DeleteTransaction(int transactionId)
+		public void DeleteTransaction(int transactionId)
     {
         var transaction = _context.Transactions.Find(transactionId);
         if (transaction != null)

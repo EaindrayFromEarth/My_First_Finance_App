@@ -48,9 +48,9 @@
                         <td>@category.CategoryId</td>
                         <td>@category.Name</td>
                         <td>
-                            <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@category.CategoryId">Details</a>
-                            <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@category.CategoryId">Edit</a>
-                            <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@category.CategoryId">Delete</a>
+                            <a asp-controller="Category" asp-action="Details" asp-route-categoryId="@category.CategoryId" class="btn btn-info btn-sm">Details</a>
+                            <a asp-controller="Category" asp-action="Edit" asp-route-categoryId="@category.CategoryId" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-controller="Category" asp-action="Delete" asp-route-categoryId="@category.CategoryId" class="btn btn-danger btn-sm">Delete</a>
                         </td>
                     </tr>
                 }
