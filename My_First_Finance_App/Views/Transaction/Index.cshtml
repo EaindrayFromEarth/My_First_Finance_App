@@ -1,4 +1,5 @@
-﻿@model IEnumerable<My_First_Finance_App.Models.Transaction>
+﻿@using System.Globalization;
+@model IEnumerable<My_First_Finance_App.Models.Transaction>
 
 <!DOCTYPE html>
 <html>
@@ -28,6 +29,38 @@
 
 	<div class="container mt-4">
 		<h2>Transactions</h2>
+
+		<div class="form-row">
+			<div class="form-group col-md-3">
+				<label for="month">Select Month:</label>
+				<select class="form-control" id="month">
+					@for (int i = 1; i <= 12; i++)
+					{
+						<option value="@i">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+					}
+				</select>
+			</div>
+
+			<div class="form-group col-md-3">
+				<label for="year">Select Year:</label>
+				<select class="form-control" id="year">
+					@for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
+					{
+						<option value="@i">@i</option>
+					}
+				</select>
+			</div>
+
+			<div class="form-group col-md-2">
+				<label for="search">Search</label>
+				<input type="text" class="form-control" id="search" placeholder="Search">
+			</div>
+
+			<div class="form-group col-md-2">
+				<button class="btn btn-primary mt-4" onclick="applyFilter()">Apply Filter</button>
+			</div>
+		</div>
+
 		<input class="form-control" id="search" placeholder="Search">
 
 		<p>
@@ -192,7 +225,25 @@
 	</script>
 
 
+	<script>
+		function applyFilter() {
+			var selectedMonth = document.getElementById('month').value;
+			var selectedYear = document.getElementById('year').value;
 
+			document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+				var columns = row.children;
+				var transactionDate = new Date(columns[1].textContent);  // Assuming Date is in the second column
+				var transactionMonth = transactionDate.getMonth() + 1;  // Month is zero-based, so add 1
+				var formattedDate = transactionDate.toLocaleDateString();
+
+				if (transactionMonth == selectedMonth && transactionDate.getFullYear() == selectedYear) {
+					row.style.display = '';  // Show the row if it matches the filter
+				} else {
+					row.style.display = 'none';  // Hide the row if it doesn't match the filter
+				}
+			});
+		}
+	</script> 
 	@*     <script>
 	$(document).ready(function () {
 	$('#transactionsTable').bootstrapTable({
