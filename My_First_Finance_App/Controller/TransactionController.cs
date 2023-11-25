@@ -12,11 +12,31 @@ public class TransactionController : Controller
         _transactionService = transactionService;
     }
 
-    public IActionResult Index()
-    {
-        var transactions = _transactionService.GetAllTransactions();
-        return View(transactions);
-    }
+	public IActionResult Index(string sortOrder)
+	{
+		ViewBag.AmountSortOrder = string.IsNullOrEmpty(sortOrder) ? "asc" : sortOrder;
+
+		var transactions = _transactionService.GetAllTransactions();
+
+		// Handle sorting
+		transactions = sortOrder switch
+		{
+			"desc" => transactions.OrderByDescending(t => t.Amount),
+			_ => transactions.OrderBy(t => t.Amount),
+		};
+
+		return View(transactions);
+	}
+
+
+
+	[HttpPost]
+	public IActionResult Search(string search)
+	{
+		var transactions = _transactionService.SearchTransactions(search);
+		return View("Index", transactions);
+	}
+
 
 	[HttpGet]
 	public IActionResult Details(int transactionId)

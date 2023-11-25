@@ -30,6 +30,22 @@
 	<div class="container mt-4">
 		<h2>Transactions</h2>
 
+		<div class="mb-3">
+			<form asp-controller="Transaction" asp-action="Search" method="post">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Search transactions..." name="search" />
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="submit">Search</button>
+					</div>
+					<div class="input-group-append">
+						<a href="@Url.Action("Index", "Transaction")" class="btn btn-outline-secondary">Clear</a>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+
 		<div class="form-row">
 			<div class="form-group col-md-3">
 				<label for="month">Select Month:</label>
@@ -51,17 +67,11 @@
 				</select>
 			</div>
 
-			<div class="form-group col-md-2">
-				<label for="search">Search</label>
-				<input type="text" class="form-control" id="search" placeholder="Search">
-			</div>
 
 			<div class="form-group col-md-2">
 				<button class="btn btn-primary mt-4" onclick="applyFilter()">Apply Filter</button>
 			</div>
 		</div>
-
-		<input class="form-control" id="search" placeholder="Search">
 
 		<p>
 			<a class="btn btn-success" data-toggle="table" asp-action="Create">Create New Transaction</a>
@@ -71,7 +81,13 @@
 				<tr>
 					<th>Transaction ID</th>
 					<th>Date</th>
-					<th>Amount</th>
+<th>
+    Amount
+    <a href="@Url.Action("Index", "Transaction", new { sortOrder = ViewBag.AmountSortOrder == "asc" ? "desc" : "asc" })">
+        <i class="fas fa-sort-@((ViewBag.AmountSortOrder == "asc" ? "up" : "down"))"></i>
+    </a>
+</th>
+
 					<th>User</th>
 					<th>Category</th>
 					<th>Actions</th>

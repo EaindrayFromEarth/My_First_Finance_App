@@ -11,8 +11,14 @@ namespace My_First_Finance_App.Services
         {
             _transactionRepository = transactionRepository;
         }
+		public IEnumerable<Transaction> SearchTransactions(string search)
+		{
+			// Call the repository method for searching transactions
+			return _transactionRepository.SearchTransactions(search);
+		}
 
-        public IEnumerable<Transaction> GetAllTransactions()
+ 
+		public IEnumerable<Transaction> GetAllTransactions()
         {
             return _transactionRepository.GetAllTransactions();
         }
@@ -36,6 +42,7 @@ namespace My_First_Finance_App.Services
         {
             _transactionRepository.DeleteTransaction(transactionId);
         }
-    }
+
+	}
 
 }

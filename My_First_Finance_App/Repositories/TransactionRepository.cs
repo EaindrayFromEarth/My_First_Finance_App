@@ -21,8 +21,20 @@ namespace My_First_Finance_App.Repositories
             return _context.Transactions.Include(t => t.User).Include(t => t.Category).ToList();
         }
 
+		public IEnumerable<Transaction> SearchTransactions(string search)
+		{
+			return _context.Transactions
+				.Include(t => t.User)
+				.Include(t => t.Category)
+				.Where(t =>
+					t.User.Username.Contains(search) ||
+					t.Category.Name.Contains(search)
+				// Add additional search criteria as needed
+				)
+				.ToList();
+		}
 
-        public Transaction GetTransactionById(int transactionId)
+		public Transaction GetTransactionById(int transactionId)
         {
             return _context.Transactions.Find(transactionId);
         }
