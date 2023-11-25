@@ -11,5 +11,6 @@ namespace My_First_Finance_App.Services
         void AddTransaction(Transaction transaction);
         void UpdateTransaction(Transaction transaction);
         void DeleteTransaction(int transactionId);
+		IEnumerable<Transaction> GetAllTransactions(int page, int pageSize);
 	}
 }

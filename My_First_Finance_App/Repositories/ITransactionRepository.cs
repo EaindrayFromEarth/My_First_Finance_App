@@ -13,8 +13,7 @@ namespace My_First_Finance_App.Repositories
         void UpdateTransaction(Transaction transaction);
         void DeleteTransaction(int transactionId);
         IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount);
-		
-
+		IEnumerable<Transaction> GetAllTransactions(int page, int pageSize);
 	}
 
 }

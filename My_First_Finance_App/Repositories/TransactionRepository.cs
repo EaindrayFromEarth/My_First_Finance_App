@@ -21,6 +21,21 @@ namespace My_First_Finance_App.Repositories
             return _context.Transactions.Include(t => t.User).Include(t => t.Category).ToList();
         }
 
+		public IEnumerable<Transaction> GetAllTransactions(int page, int pageSize)
+		{
+			// Calculate the number of skipped rows based on the page and pageSize
+			int skipRows = (page - 1) * pageSize;
+
+			// Perform pagination using LINQ
+			return _context.Transactions
+				.Include(t => t.User)
+				.Include(t => t.Category)
+				.OrderBy(t => t.Amount)  // Adjust the ordering based on your requirements
+				.Skip(skipRows)
+				.Take(pageSize)
+				.ToList();
+		}
+
 		public IEnumerable<Transaction> SearchTransactions(string search)
 		{
 			return _context.Transactions

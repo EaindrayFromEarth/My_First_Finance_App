@@ -1,6 +1,13 @@
 ﻿@using System.Globalization;
 @model IEnumerable<My_First_Finance_App.Models.Transaction>
 
+
+
+@{
+	int page = ViewBag.Page ?? 1;  // Use ViewBag to get the page
+	int pageSize = 10;  // Set your desired page size
+	int totalPages = (int)Math.Ceiling((double)Model.Count() / pageSize);
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -112,6 +119,18 @@
 			</tbody>
 		</table>
 
+		<div>
+			<nav aria-label="Page navigation">
+				<ul class="pagination">
+					@for (var i = 1; i <= totalPages; i++)
+					{
+						<li class="page-item @(i == page ? "active" : "")">
+							<a class="page-link" href="@Url.Action("Index", new { page = i, pageSize })">@i</a>
+						</li>
+					}
+				</ul>
+			</nav>
+		</div>
 
 		<!-- Transaction Amounts by Category (Donut Chart) -->
 		<div style="width: 300px; height: 300px; display: inline-block;">

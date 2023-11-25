@@ -3,7 +3,7 @@ using My_First_Finance_App.Repositories;
 
 namespace My_First_Finance_App.Services
 {
-    public class TransactionService : ITransactionService
+	public class TransactionService : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
 
@@ -43,6 +43,10 @@ namespace My_First_Finance_App.Services
             _transactionRepository.DeleteTransaction(transactionId);
         }
 
+		public IEnumerable<Transaction> GetAllTransactions(int page, int pageSize)
+		{
+			return _transactionRepository.GetAllTransactions(page, pageSize);
+		}
 	}
 
 }

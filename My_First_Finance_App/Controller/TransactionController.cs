@@ -12,7 +12,7 @@ public class TransactionController : Controller
         _transactionService = transactionService;
     }
 
-	public IActionResult Index(string sortOrder)
+/*	public IActionResult Index(string sortOrder)
 	{
 		ViewBag.AmountSortOrder = string.IsNullOrEmpty(sortOrder) ? "asc" : sortOrder;
 
@@ -24,6 +24,14 @@ public class TransactionController : Controller
 			"desc" => transactions.OrderByDescending(t => t.Amount),
 			_ => transactions.OrderBy(t => t.Amount),
 		};
+
+		return View(transactions);
+	}*/
+
+	public IActionResult Index(int page = 1, int pageSize = 10)
+	{
+		// Adjust pageSize as needed, and you can pass it to the view if necessary
+		var transactions = _transactionService.GetAllTransactions(page, pageSize);
 
 		return View(transactions);
 	}
