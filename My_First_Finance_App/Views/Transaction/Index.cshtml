@@ -75,7 +75,7 @@
 		</div>
 		<!-- Transaction Count by User (Bar Chart) -->
 		<div style="width: 600px; height: 300px; display: inline-block;">
-			<canvas id="transactionCountByUserChart"></canvas>
+			<canvas id="transactionAmountByUserChart"></canvas>
 		</div>
 	</div>
 
@@ -140,10 +140,10 @@
 		});
 	</script>
 	<script>
-		var transactionCountByUserData = {
+		var transactionAmountByUserData = {
 			labels: [],  // User labels
 			datasets: [{
-				label: 'Transaction Count by User',
+				label: 'Transaction Amount by User',
 				data: [],
 				backgroundColor: 'rgba(75, 192, 192, 0.2)',
 				borderColor: 'rgba(75, 192, 192, 1)',
@@ -153,17 +153,29 @@
 
 		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
 			var columns = row.children;
-			transactionCountByUserData.labels.push(columns[3].textContent);  // Assuming User is in the fourth column
-			transactionCountByUserData.datasets[0].data.push(1);  // Increment count for each row
+			var userName = columns[3].textContent;  // Assuming User is in the fourth column
+			var amount = parseFloat(columns[2].textContent);  // Assuming Amount is in the third column
+
+			// Check if the user name already exists in labels
+			var existingIndex = transactionAmountByUserData.labels.indexOf(userName);
+
+			if (existingIndex !== -1) {
+				// If user name exists, add the amount to the existing user
+				transactionAmountByUserData.datasets[0].data[existingIndex] += amount;
+			} else {
+				// If user name doesn't exist, add a new label and set the amount
+				transactionAmountByUserData.labels.push(userName);
+				transactionAmountByUserData.datasets[0].data.push(amount);
+			}
 		});
 
-		var transactionCountByUserChart = new Chart(document.getElementById('transactionCountByUserChart'), {
+		var transactionAmountByUserChart = new Chart(document.getElementById('transactionAmountByUserChart'), {
 			type: 'bar',
-			data: transactionCountByUserData,
+			data: transactionAmountByUserData,
 			options: {
 				scales: {
 					x: { title: { display: true, text: 'User' } },
-					y: { beginAtZero: true, title: { display: true, text: 'Transaction Count' } }
+					y: { beginAtZero: true, title: { display: true, text: 'Transaction Amount' } }
 				}
 			}
 		});
@@ -178,6 +190,7 @@
 			var transactionList = new List('transactionsTable', options);
 		});
 	</script>
+
 
 
 	@*     <script>
