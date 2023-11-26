@@ -1,0 +1,32 @@
+﻿@model IEnumerable<My_First_Finance_App.Models.Salary>
+
+<h2>Salaries</h2>
+
+<a asp-action="Create" class="btn btn-primary">Add Salary</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Salary ID</th>
+            <th>Amount</th>
+            <th>Timestamp</th>
+            <th>Income Source ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var salary in Model)
+        {
+            <tr>
+                <td>@salary.SalaryId</td>
+                <td>@salary.Amount</td>
+                <td>@salary.Timestamp</td>
+                <td>@salary.IncomeSource.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-salaryId="@salary.SalaryId">Edit</a> |
+                    <a asp-action="Delete" asp-route-salaryId="@salary.SalaryId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

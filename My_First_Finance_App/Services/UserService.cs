@@ -50,5 +50,11 @@ namespace My_First_Finance_App.Services
                 _context.SaveChanges();
             }
         }
+
+        public IEnumerable<User> GetAllUsers() // Implement this method
+        {
+            return _context.Users.ToList();
+        }
+
     }
 }

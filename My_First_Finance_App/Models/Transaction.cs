@@ -19,11 +19,25 @@ namespace My_First_Finance_App.Models
         public Category Category { get; set; }
 
 
-	/*	[ForeignKey("IncomeType")]
-		public int? IncomeTypeId { get; set; } // Nullable as not all transactions may be associated with an income type
-		public IncomeType IncomeType { get; set; }
+		[ForeignKey("Salary")]
+		public int? SalaryId { get; set; }
+		public Salary? Salary { get; set; }
 
-		// New property for salary
-		public decimal Salary { get; set; }*/
-	}
+
+		public decimal SavingBalance { get; set; }
+
+
+        // Add these properties
+        [NotMapped] // This ensures that these properties are not mapped to the database
+        public string Username => User?.Username;
+
+        [NotMapped]
+        public string CategoryName => Category?.Name;
+        /*	[ForeignKey("IncomeType")]
+			public int? IncomeTypeId { get; set; } // Nullable as not all transactions may be associated with an income type
+			public IncomeType IncomeType { get; set; }
+
+			// New property for salary
+			public decimal Salary { get; set; }*/
+    }
 }

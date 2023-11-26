@@ -14,6 +14,9 @@ namespace My_First_Finance_App.Repositories
         void DeleteTransaction(int transactionId);
         IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount);
 		IEnumerable<Transaction> GetAllTransactions(int page, int pageSize);
+		decimal CalculateSavings(DateTime startDate, DateTime endDate);
+       
+
 	}
 
 }

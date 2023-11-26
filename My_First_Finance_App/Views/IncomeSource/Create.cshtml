@@ -1,0 +1,11 @@
+﻿@model My_First_Finance_App.Models.IncomeSource
+
+<h2>Create Income Source</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

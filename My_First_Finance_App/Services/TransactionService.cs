@@ -6,12 +6,15 @@ namespace My_First_Finance_App.Services
 	public class TransactionService : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
+       // private readonly IUserService _userService;  // Add this
 
         public TransactionService(ITransactionRepository transactionRepository)
         {
             _transactionRepository = transactionRepository;
+            
         }
-		public IEnumerable<Transaction> SearchTransactions(string search)
+
+        public IEnumerable<Transaction> SearchTransactions(string search)
 		{
 			// Call the repository method for searching transactions
 			return _transactionRepository.SearchTransactions(search);
@@ -47,6 +50,12 @@ namespace My_First_Finance_App.Services
 		{
 			return _transactionRepository.GetAllTransactions(page, pageSize);
 		}
-	}
+
+		public decimal CalculateSavings(DateTime startDate, DateTime endDate)
+		{
+			return _transactionRepository.CalculateSavings(startDate, endDate);
+		}
+
+    }
 
 }

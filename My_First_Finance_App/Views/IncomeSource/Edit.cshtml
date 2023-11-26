@@ -1,0 +1,12 @@
+﻿@model My_First_Finance_App.Models.IncomeSource
+
+<h2>Edit Income Source</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="IncomeSourceId" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

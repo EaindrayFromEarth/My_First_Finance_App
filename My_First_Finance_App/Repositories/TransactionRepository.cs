@@ -49,26 +49,46 @@ namespace My_First_Finance_App.Repositories
 				.ToList();
 		}
 
+		public decimal CalculateSavings(DateTime startDate, DateTime endDate)
+		{
+			var transactions = _context.Transactions
+				.Where(t => t.Date >= startDate && t.Date <= endDate)
+				.ToList();
+
+			var totalSalaries = transactions.Where(t => t.Salary != null).Sum(t => t.Salary.Amount);
+			var totalExpenses = transactions.Where(t => t.Amount < 0).Sum(t => t.Amount);
+
+			return totalSalaries - Math.Abs(totalExpenses);
+		}
 		public Transaction GetTransactionById(int transactionId)
         {
             return _context.Transactions.Find(transactionId);
         }
 
-        public void AddTransaction(Transaction transaction)
-        {
-            // Check if the user exists
-            var userExists = _context.Users.Any(u => u.UserId == transaction.UserId);
+		public void AddTransaction(Transaction transaction)
+		{
+			// Check if the user with the specified UserId exists
+			var user = _context.Users.Find(transaction.UserId);
+			if (user == null)
+			{
+				// Handle the case where the user does not exist
+				throw new InvalidOperationException("User does not exist.");
+			}
 
-            if (!userExists)
-            {
-                // Handle the scenario where the user doesn't exist
-                throw new InvalidOperationException("User does not exist.");
-            }
+			// If Salary is not provided, set a default SalaryId (e.g., 1) or use an existing salary
+			if (transaction.Salary == null)
+			{
+				// Set a default SalaryId (you can change this based on your logic)
+				transaction.SalaryId = 1;
 
-            // If the user exists, proceed to add the transaction
-            _context.Transactions.Add(transaction);
-            _context.SaveChanges();
-        }
+				// Alternatively, you can set it to an existing salary
+				// transaction.SalaryId = _context.Salaries.FirstOrDefault()?.SalaryId;
+			}
+
+			// If the user and SalaryId exist, add the transaction
+			_context.Transactions.Add(transaction);
+			_context.SaveChanges();
+		}
 
 
 		/*        public void AddTransaction(Transaction transaction)
@@ -119,12 +139,15 @@ namespace My_First_Finance_App.Repositories
             throw new NotImplementedException();
         }
 
-        /*        public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
+		
+
+
+		/*        public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
                 {
                     var sql = "SELECT * FROM Transactions WHERE Amount > @amount";
                     return _context.Database.SqlQuery<Transaction>(sql, new SqlParameter("@amount", amount)).ToList();
 
                 }*/
-    }
+	}
 
 }

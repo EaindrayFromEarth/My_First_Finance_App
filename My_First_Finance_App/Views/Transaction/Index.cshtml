@@ -1,13 +1,27 @@
 ﻿@using System.Globalization;
+@using System.Diagnostics;
 @model IEnumerable<My_First_Finance_App.Models.Transaction>
 
 
 
 @{
-	int page = ViewBag.Page ?? 1;  // Use ViewBag to get the page
-	int pageSize = 10;  // Set your desired page size
+	int page = ViewBag.Page ?? 1;
+	int pageSize = 5;
 	int totalPages = (int)Math.Ceiling((double)Model.Count() / pageSize);
+
+	// Debug statement to check totalPages value
+	Debug.WriteLine("Total Pages: " + totalPages);
 }
+
+
+@{
+	ViewBag.Title = "Calculate Savings";
+}
+
+<h2>Calculated Savings</h2>
+
+<p>Savings: @ViewBag.Savings</p>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -83,6 +97,8 @@
 		<p>
 			<a class="btn btn-success" data-toggle="table" asp-action="Create">Create New Transaction</a>
 		</p>
+
+
 		<table id="transactionsTable" class="table table-striped">
 			<thead>
 				<tr>
@@ -119,18 +135,16 @@
 			</tbody>
 		</table>
 
-		<div>
-			<nav aria-label="Page navigation">
-				<ul class="pagination">
-					@for (var i = 1; i <= totalPages; i++)
-					{
-						<li class="page-item @(i == page ? "active" : "")">
-							<a class="page-link" href="@Url.Action("Index", new { page = i, pageSize })">@i</a>
-						</li>
-					}
-				</ul>
-			</nav>
-		</div>
+		<nav aria-label="Page navigation">
+			<ul class="pagination">
+				@for (var i = 1; i <= totalPages; i++)
+				{
+					<li class="page-item @(i == page ? "active" : "")">
+						<a class="page-link" href="#" onclick="changePage(@i)">@i</a>
+					</li>
+				}
+			</ul>
+		</nav>
 
 		<!-- Transaction Amounts by Category (Donut Chart) -->
 		<div style="width: 300px; height: 300px; display: inline-block;">
@@ -150,19 +164,29 @@
 
 	<script>
 		var transactionAmountsByCategoryData = {
-			labels: [],  // Category labels
+			labels: [],
 			datasets: [{
 				data: [],
-				backgroundColor: ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)'],
-				borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)'],
+				backgroundColor: [],  // Array to hold dynamic background colors
+				borderColor: [],
 				borderWidth: 1
 			}]
 		};
 
+		var existingCategories = [];  // Array to track existing categories
+
 		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
 			var columns = row.children;
-			transactionAmountsByCategoryData.labels.push(columns[4].textContent);  // Assuming Category is in the fifth column
-			transactionAmountsByCategoryData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
+			var category = columns[4].textContent;  // Assuming Category is in the fifth column
+
+			if (!existingCategories.includes(category)) {
+				transactionAmountsByCategoryData.labels.push(category);
+				transactionAmountsByCategoryData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
+				var dynamicColor = getRandomColor();  // Function to get a random color
+				transactionAmountsByCategoryData.datasets[0].backgroundColor.push(dynamicColor);
+				transactionAmountsByCategoryData.datasets[0].borderColor.push(dynamicColor);
+				existingCategories.push(category);
+			}
 		});
 
 		var transactionAmountsByCategoryChart = new Chart(document.getElementById('transactionAmountsByCategoryChart'), {
@@ -175,7 +199,18 @@
 				}
 			}
 		});
+
+		// Function to generate a random color
+		function getRandomColor() {
+			var letters = '0123456789ABCDEF';
+			var color = '#';
+			for (var i = 0; i < 6; i++) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+			return color;
+		}
 	</script>
+
 	<script>
 		var monthlyExpenseData = {
 			labels: [],  // Month labels
@@ -278,7 +313,26 @@
 				}
 			});
 		}
-	</script> 
+	</script>
+
+
+	<script>
+		function changePage(newPage) {
+			var pageSize = 5;  // Set your desired page size
+			var startIndex = (newPage - 1) * pageSize;
+			var endIndex = startIndex + pageSize;
+
+			document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row, index) {
+				row.style.display = index >= startIndex && index < endIndex ? '' : 'none';
+			});
+
+			// Update the active class for pagination
+			document.querySelectorAll('.pagination li').forEach(function (li) {
+				li.classList.remove('active');
+			});
+			document.querySelector('.pagination li:nth-child(' + newPage + ')').classList.add('active');
+		}
+	</script>
 	@*     <script>
 	$(document).ready(function () {
 	$('#transactionsTable').bootstrapTable({

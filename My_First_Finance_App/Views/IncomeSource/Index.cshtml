@@ -1,0 +1,30 @@
+﻿@model IEnumerable<My_First_Finance_App.Models.IncomeSource>
+
+<h2>Income Sources</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var incomeSource in Model)
+        {
+            <tr>
+                <td>@incomeSource.IncomeSourceId</td>
+                <td>@incomeSource.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-incomeSourceId="@incomeSource.IncomeSourceId">Edit</a> |
+                    <a asp-action="Delete" asp-route-incomeSourceId="@incomeSource.IncomeSourceId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
