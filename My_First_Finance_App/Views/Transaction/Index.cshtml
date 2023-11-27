@@ -7,6 +7,9 @@
     // Debug statement to check totalPages value
     Debug.WriteLine("Total Pages: " + totalPages);
 }
+@{
+    int count = 0;
+}
 
 <h2>Calculated Savings
     <span class="badge bg-success">Total Balance: @(Convert.ToDecimal(ViewBag.netBalance.ToString()).ToString("n0"))</span>
@@ -64,7 +67,7 @@
     <table id="transactionsTable" class="table table-striped">
         <thead>
             <tr>
-                <th>Transaction ID</th>
+                <th>Transaction No</th>
                 <th>Date</th>
                 <th>
                     Amount
@@ -82,9 +85,9 @@
             @foreach (var transaction in Model)
             {
                 <tr>
-                    <td>@transaction.TransactionId</td>
-                    <td>@transaction.Date.ToShortDateString()</td>
-                    <td>@transaction.Amount</td>
+                    <td>@(++count)</td>
+                    <td>@transaction.Date.ToString("dd-MMM-yyyy hh:mm tt")</td>
+                    <td>@transaction.Amount.ToString("n2")</td>
                     <td>@transaction.User.Username</td>
                     <td>@transaction.Category.Name</td>
                     <td>

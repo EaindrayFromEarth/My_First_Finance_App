@@ -19,8 +19,8 @@
                 <td>@incomeSource.IncomeSourceId</td>
                 <td>@incomeSource.Name</td>
                 <td>
-                    <a asp-action="Edit" asp-route-incomeSourceId="@incomeSource.IncomeSourceId">Edit</a> |
-                    <a asp-action="Delete" asp-route-incomeSourceId="@incomeSource.IncomeSourceId">Delete</a>
+                    <a class="btn btn-warning btn-sm"  asp-action="Edit" asp-route-incomeSourceId="@incomeSource.IncomeSourceId">Edit</a> |
+                    <a class="btn btn-danger btn-sm"  asp-action="Delete" asp-route-incomeSourceId="@incomeSource.IncomeSourceId">Delete</a>
                 </td>
             </tr>
         }

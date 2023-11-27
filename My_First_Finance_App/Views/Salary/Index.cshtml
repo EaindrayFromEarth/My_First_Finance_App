@@ -25,8 +25,8 @@
                 <td>@salary.Amount.ToString("n0")</td>
                 <td>@salary.Timestamp.ToString("dd-MMM-yyyy hh:mm tt")</td>
                 <td>
-                    <a asp-action="Edit" asp-route-salaryId="@salary.SalaryId">Edit</a> |
-                    <a asp-action="Delete" asp-route-salaryId="@salary.SalaryId">Delete</a>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-salaryId="@salary.SalaryId">Edit</a> |
+                    <a class="btn btn-danger btn-sm"  asp-action="Delete" asp-route-salaryId="@salary.SalaryId">Delete</a>
                 </td>
             </tr>
         }

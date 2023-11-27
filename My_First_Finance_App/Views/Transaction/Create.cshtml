@@ -14,7 +14,7 @@
         <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="UserId" class="control-label"></label>
+        <label asp-for="UserId" class="control-label">User Name</label>
         @* <input asp-for="UserId" class="form-control" /> *@
         <select asp-for="UserId" class="form-control"
                 asp-items="@(new SelectList(ViewBag.Users, "UserId", "Username"))">
@@ -23,7 +23,7 @@
         <span asp-validation-for="UserId" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="CategoryId" class="control-label"></label>
+        <label asp-for="CategoryId" class="control-label">Category Name</label>
         @* <input asp-for="CategoryId" class="form-control" /> *@
         <select asp-for="CategoryId" class="form-control"
                 asp-items="@(new SelectList(ViewBag.CategoryList, "CategoryId", "Name"))">
