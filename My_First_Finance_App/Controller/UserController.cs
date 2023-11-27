@@ -35,7 +35,7 @@ public class UserController : Controller
             // You might want to perform additional validation here
             _userService.CreateUser(user);
 
-            return RedirectToAction(nameof(Index)); // Assuming you have an Index action in UserController
+            return Redirect("/"); // Assuming you have an Index action in UserController
         }
 
         // If we reach here, there was an issue with the user creation

@@ -1,377 +1,279 @@
-﻿@using System.Globalization;
-@using System.Diagnostics;
-@model IEnumerable<My_First_Finance_App.Models.Transaction>
-
-
-
+﻿@model IEnumerable<My_First_Finance_App.Models.Transaction>
 @{
-	int page = ViewBag.Page ?? 1;
-	int pageSize = 5;
-	int totalPages = (int)Math.Ceiling((double)Model.Count() / pageSize);
+    int page = ViewBag.Page ?? 1;
+    int pageSize = 5;
+    int totalPages = (int)Math.Ceiling((double)Model.Count() / pageSize);
 
-	// Debug statement to check totalPages value
-	Debug.WriteLine("Total Pages: " + totalPages);
+    // Debug statement to check totalPages value
+    Debug.WriteLine("Total Pages: " + totalPages);
 }
 
-<h2>Calculated Savings</h2>
-<h3 style="color: green;">Total Balance: @ViewBag.netBalance</h3>
+<h2>Calculated Savings
+    <span class="badge bg-success">Total Balance: @(Convert.ToDecimal(ViewBag.netBalance.ToString()).ToString("n0"))</span>
+</h2>
+<div class="container mt-4">
+    <h2>Transactions</h2>
 
+    <div class="mb-3">
+        <form asp-controller="Transaction" asp-action="Search" method="post">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search transactions..." name="search" />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+                <div class="input-group-append">
+                    <a href="@Url.Action("Index", "Transaction")" class="btn btn-outline-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
 
+    <!-- Filtering Form -->
+    <form asp-controller="Transaction" asp-action="FilterTransactions" method="post">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="month">Select Month:</label>
+                <select class="form-control" id="month" name="selectedMonth">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                    }
+                </select>
+            </div>
 
+            <div class="form-group col-md-3">
+                <label for="year">Select Year:</label>
+                <select class="form-control" id="year" name="selectedYear">
+                    @for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Transactions</title>
-	<!-- Chart.js -->
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+            <div class="form-group col-md-2">
+                <button type="submit" class="btn btn-primary mt-4">Apply Filter</button>
+            </div>
+        </div>
+    </form>
 
-	<!-- Bootstrap Table CSS -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.css">
+    <p>
+        <a class="btn btn-success" data-toggle="table" asp-action="Create">Create New Transaction</a>
+    </p>
 
-	<!-- jQuery -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <table id="transactionsTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Date</th>
+                <th>
+                    Amount
+                    <a href="@Url.Action("Index", "Transaction", new { sortOrder = ViewBag.AmountSortOrder == "asc" ? "desc" : "asc" })">
+                        <i class="fas fa-sort-@((ViewBag.AmountSortOrder == "asc" ? "up" : "down"))"></i>
+                    </a>
+                </th>
 
-	<!-- Bootstrap JS -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+                <th>User</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model)
+            {
+                <tr>
+                    <td>@transaction.TransactionId</td>
+                    <td>@transaction.Date.ToShortDateString()</td>
+                    <td>@transaction.Amount</td>
+                    <td>@transaction.User.Username</td>
+                    <td>@transaction.Category.Name</td>
+                    <td>
+                        <a class="btn btn-info btn-sm" asp-controller="Transaction" asp-action="Details" asp-route-transactionId="@transaction.TransactionId">Details</a>
+                        <a class="btn btn-warning btn-sm" asp-controller="Transaction" asp-action="Edit" asp-route-transactionId="@transaction.TransactionId">Edit</a>
+                        <a class="btn btn-danger btn-sm" asp-controller="Transaction" asp-action="Delete" asp-route-transactionId="@transaction.TransactionId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-	<!-- Bootstrap Table JS -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.18.3/bootstrap-table.min.js"></script>
-	<!-- List.js -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @for (var i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link" href="#" onclick="changePage(@i)">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
 
-</head>
-<body>
+    <!-- Transaction Amounts by Category (Donut Chart) -->
+    <div style="width: 300px; height: 300px; display: inline-block;">
+        <canvas id="transactionAmountsByCategoryChart"></canvas>
+    </div>
 
-	<div class="container mt-4">
-		<h2>Transactions</h2>
+    <!-- Monthly Expense Trend (Line Chart) -->
+    <div style="width: 400px; height: 200px; display: inline-block;">
+        <canvas id="monthlyExpenseChart"></canvas>
+    </div>
 
-		<div class="mb-3">
-			<form asp-controller="Transaction" asp-action="Search" method="post">
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Search transactions..." name="search" />
-					<div class="input-group-append">
-						<button class="btn btn-outline-secondary" type="submit">Search</button>
-					</div>
-					<div class="input-group-append">
-						<a href="@Url.Action("Index", "Transaction")" class="btn btn-outline-secondary">Clear</a>
-					</div>
-				</div>
-			</form>
-		</div>
+    <!-- Transaction Count by User (Bar Chart) -->
+    <div style="width: 600px; height: 300px; display: inline-block;">
+        <canvas id="transactionAmountByUserChart"></canvas>
+    </div>
+</div>
 
+@section scripts {
+    <script>
+        var transactionAmountsByCategoryData = {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [],  // Array to hold dynamic background colors
+                borderColor: [],
+                borderWidth: 1
+            }]
+        };
 
+        var existingCategories = [];  // Array to track existing categories
 
-		<!-- Filtering Form -->
-		<form asp-controller="Transaction" asp-action="FilterTransactions" method="post">
-			<div class="form-row">
-				<div class="form-group col-md-3">
-					<label for="month">Select Month:</label>
-					<select class="form-control" id="month" name="selectedMonth">
-						@for (int i = 1; i <= 12; i++)
-						{
-							<option value="@i">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
-						}
-					</select>
-				</div>
+        document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+            var columns = row.children;
+            var category = columns[4].textContent;  // Assuming Category is in the fifth column
 
-				<div class="form-group col-md-3">
-					<label for="year">Select Year:</label>
-					<select class="form-control" id="year" name="selectedYear">
-						@for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
-						{
-							<option value="@i">@i</option>
-						}
-					</select>
-				</div>
+            if (!existingCategories.includes(category)) {
+                transactionAmountsByCategoryData.labels.push(category);
+                transactionAmountsByCategoryData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
+                var dynamicColor = getRandomColor();  // Function to get a random color
+                transactionAmountsByCategoryData.datasets[0].backgroundColor.push(dynamicColor);
+                transactionAmountsByCategoryData.datasets[0].borderColor.push(dynamicColor);
+                existingCategories.push(category);
+            }
+        });
 
-				<div class="form-group col-md-2">
-					<button type="submit" class="btn btn-primary mt-4">Apply Filter</button>
-				</div>
-			</div>
-		</form>
+        var transactionAmountsByCategoryChart = new Chart(document.getElementById('transactionAmountsByCategoryChart'), {
+            type: 'doughnut',
+            data: transactionAmountsByCategoryData,
+            options: {
+                plugins: {
+                    legend: { display: true, position: 'right' },
+                    title: { display: true, text: 'Transaction Amounts by Category' }
+                }
+            }
+        });
 
+        // Function to generate a random color
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
 
-		<p>
-			<a class="btn btn-success" data-toggle="table" asp-action="Create">Create New Transaction</a>
-		</p>
+    <script>
+        var monthlyExpenseData = {
+            labels: [],  // Month labels
+            datasets: [{
+                label: 'Monthly Expense Trend',
+                data: [],
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
 
+        document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+            var columns = row.children;
+            monthlyExpenseData.labels.push(columns[1].textContent);  // Assuming Date is in the second column
+            monthlyExpenseData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
+        });
 
-		<table id="transactionsTable" class="table table-striped">
-			<thead>
-				<tr>
-					<th>Transaction ID</th>
-					<th>Date</th>
-<th>
-    Amount
-    <a href="@Url.Action("Index", "Transaction", new { sortOrder = ViewBag.AmountSortOrder == "asc" ? "desc" : "asc" })">
-        <i class="fas fa-sort-@((ViewBag.AmountSortOrder == "asc" ? "up" : "down"))"></i>
-    </a>
-</th>
+        var monthlyExpenseChart = new Chart(document.getElementById('monthlyExpenseChart'), {
+            type: 'line',
+            data: monthlyExpenseData,
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Month' } },
+                    y: {
+                        title: { display: true, text: 'Amount' },
+                        beginAtZero: true // Start Y-axis from zero
+                    }
+                }
+            }
+        });
+    </script>
 
-					<th>User</th>
-					<th>Category</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var transaction in Model)
-				{
-					<tr>
-						<td>@transaction.TransactionId</td>
-						<td>@transaction.Date.ToShortDateString()</td>
-						<td>@transaction.Amount</td>
-						<td>@transaction.User.Username</td>
-						<td>@transaction.Category.Name</td>
-						<td>
-							<a class="btn btn-info btn-sm" asp-controller="Transaction" asp-action="Details" asp-route-transactionId="@transaction.TransactionId">Details</a>
-							<a class="btn btn-warning btn-sm" asp-controller="Transaction" asp-action="Edit" asp-route-transactionId="@transaction.TransactionId">Edit</a>
-							<a class="btn btn-danger btn-sm" asp-controller="Transaction" asp-action="Delete" asp-route-transactionId="@transaction.TransactionId">Delete</a>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
+    <script>
+        var transactionAmountByUserData = {
+            labels: [],  // User labels
+            datasets: [{
+                label: 'Transaction Amount by User',
+                data: [],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
 
-		<nav aria-label="Page navigation">
-			<ul class="pagination">
-				@for (var i = 1; i <= totalPages; i++)
-				{
-					<li class="page-item @(i == page ? "active" : "")">
-						<a class="page-link" href="#" onclick="changePage(@i)">@i</a>
-					</li>
-				}
-			</ul>
-		</nav>
+        document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
+            var columns = row.children;
+            var userName = columns[3].textContent;  // Assuming User is in the fourth column
+            var amount = parseFloat(columns[2].textContent);  // Assuming Amount is in the third column
 
-		<!-- Transaction Amounts by Category (Donut Chart) -->
-		<div style="width: 300px; height: 300px; display: inline-block;">
-			<canvas id="transactionAmountsByCategoryChart"></canvas>
-		</div>
+            // Check if the user name already exists in labels
+            var existingIndex = transactionAmountByUserData.labels.indexOf(userName);
 
-		<!-- Monthly Expense Trend (Line Chart) -->
-		<div style="width: 400px; height: 200px; display: inline-block;">
-			<canvas id="monthlyExpenseChart"></canvas>
-		</div>
-		<!-- Transaction Count by User (Bar Chart) -->
-		<div style="width: 600px; height: 300px; display: inline-block;">
-			<canvas id="transactionAmountByUserChart"></canvas>
-		</div>
-	</div>
+            if (existingIndex !== -1) {
+                // If user name exists, add the amount to the existing user
+                transactionAmountByUserData.datasets[0].data[existingIndex] += amount;
+            } else {
+                // If user name doesn't exist, add a new label and set the amount
+                transactionAmountByUserData.labels.push(userName);
+                transactionAmountByUserData.datasets[0].data.push(amount);
+            }
+        });
 
+        var transactionAmountByUserChart = new Chart(document.getElementById('transactionAmountByUserChart'), {
+            type: 'bar',
+            data: transactionAmountByUserData,
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'User' } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Transaction Amount' } }
+                }
+            }
+        });
+    </script>
 
-	<script>
-		var transactionAmountsByCategoryData = {
-			labels: [],
-			datasets: [{
-				data: [],
-				backgroundColor: [],  // Array to hold dynamic background colors
-				borderColor: [],
-				borderWidth: 1
-			}]
-		};
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var options = {
+                valueNames: ['Transaction ID', 'Date', 'Amount', 'User', 'Category']  // Add class names for each column
+            };
 
-		var existingCategories = [];  // Array to track existing categories
+            var transactionList = new List('transactionsTable', options);
+        });
+    </script>
 
-		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
-			var columns = row.children;
-			var category = columns[4].textContent;  // Assuming Category is in the fifth column
+    <script>
+        function changePage(newPage) {
+            var pageSize = 5;  // Set your desired page size
+            var startIndex = (newPage - 1) * pageSize;
+            var endIndex = startIndex + pageSize;
 
-			if (!existingCategories.includes(category)) {
-				transactionAmountsByCategoryData.labels.push(category);
-				transactionAmountsByCategoryData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
-				var dynamicColor = getRandomColor();  // Function to get a random color
-				transactionAmountsByCategoryData.datasets[0].backgroundColor.push(dynamicColor);
-				transactionAmountsByCategoryData.datasets[0].borderColor.push(dynamicColor);
-				existingCategories.push(category);
-			}
-		});
+            document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row, index) {
+                row.style.display = index >= startIndex && index < endIndex ? '' : 'none';
+            });
 
-		var transactionAmountsByCategoryChart = new Chart(document.getElementById('transactionAmountsByCategoryChart'), {
-			type: 'doughnut',
-			data: transactionAmountsByCategoryData,
-			options: {
-				plugins: {
-					legend: { display: true, position: 'right' },
-					title: { display: true, text: 'Transaction Amounts by Category' }
-				}
-			}
-		});
-
-		// Function to generate a random color
-		function getRandomColor() {
-			var letters = '0123456789ABCDEF';
-			var color = '#';
-			for (var i = 0; i < 6; i++) {
-				color += letters[Math.floor(Math.random() * 16)];
-			}
-			return color;
-		}
-	</script>
-
-	<script>
-		var monthlyExpenseData = {
-			labels: [],  // Month labels
-			datasets: [{
-				label: 'Monthly Expense Trend',
-				data: [],
-				fill: false,
-				borderColor: 'rgb(75, 192, 192)',
-				tension: 0.1
-			}]
-		};
-
-		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
-			var columns = row.children;
-			monthlyExpenseData.labels.push(columns[1].textContent);  // Assuming Date is in the second column
-			monthlyExpenseData.datasets[0].data.push(parseFloat(columns[2].textContent));  // Assuming Amount is in the third column
-		});
-
-		var monthlyExpenseChart = new Chart(document.getElementById('monthlyExpenseChart'), {
-			type: 'line',
-			data: monthlyExpenseData,
-			options: {
-				scales: {
-					x: { title: { display: true, text: 'Month' } },
-					y: { title: { display: true, text: 'Amount' },
-						beginAtZero: true // Start Y-axis from zero
-					 }
-				}
-			}
-		});
-	</script>
-	<script>
-		var transactionAmountByUserData = {
-			labels: [],  // User labels
-			datasets: [{
-				label: 'Transaction Amount by User',
-				data: [],
-				backgroundColor: 'rgba(75, 192, 192, 0.2)',
-				borderColor: 'rgba(75, 192, 192, 1)',
-				borderWidth: 1
-			}]
-		};
-
-		document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
-			var columns = row.children;
-			var userName = columns[3].textContent;  // Assuming User is in the fourth column
-			var amount = parseFloat(columns[2].textContent);  // Assuming Amount is in the third column
-
-			// Check if the user name already exists in labels
-			var existingIndex = transactionAmountByUserData.labels.indexOf(userName);
-
-			if (existingIndex !== -1) {
-				// If user name exists, add the amount to the existing user
-				transactionAmountByUserData.datasets[0].data[existingIndex] += amount;
-			} else {
-				// If user name doesn't exist, add a new label and set the amount
-				transactionAmountByUserData.labels.push(userName);
-				transactionAmountByUserData.datasets[0].data.push(amount);
-			}
-		});
-
-		var transactionAmountByUserChart = new Chart(document.getElementById('transactionAmountByUserChart'), {
-			type: 'bar',
-			data: transactionAmountByUserData,
-			options: {
-				scales: {
-					x: { title: { display: true, text: 'User' } },
-					y: { beginAtZero: true, title: { display: true, text: 'Transaction Amount' } }
-				}
-			}
-		});
-	</script>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			var options = {
-				valueNames: ['Transaction ID', 'Date', 'Amount', 'User', 'Category']  // Add class names for each column
-			};
-
-			var transactionList = new List('transactionsTable', options);
-		});
-	</script>
-
-@* 	<script>
-		document.getElementById('applyFilterBtn').addEventListener('click', function () {
-			var selectedMonth = document.getElementById('month').value;
-			var selectedYear = document.getElementById('year').value;
-			console.log(`Selected Month: ${selectedMonth}, Selected Year: ${selectedYear}`);
-
-			// Make an AJAX request to filter transactions
-			fetch('@Url.Action("FilterTransactions", "Transaction")', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-Requested-With': 'XMLHttpRequest'
-				},
-				body: JSON.stringify({ selectedMonth, selectedYear })
-			})
-				.then(response => response.text())
-				.then(data => {
-					document.getElementById('transactionTableContainer').innerHTML = data;
-				});
-		});
-	</script> *@
-	@* 	<script>
-		function applyFilter() {
-			var selectedMonth = document.getElementById('month').value;
-			var selectedYear = document.getElementById('year').value;
-
-			document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row) {
-				var columns = row.children;
-				var transactionDate = new Date(columns[1].textContent);  // Assuming Date is in the second column
-				var transactionMonth = transactionDate.getMonth() + 1;  // Month is zero-based, so add 1
-				var formattedDate = transactionDate.toLocaleDateString();
-
-				if (transactionMonth == selectedMonth && transactionDate.getFullYear() == selectedYear) {
-					row.style.display = '';  // Show the row if it matches the filter
-				} else {
-					row.style.display = 'none';  // Hide the row if it doesn't match the filter
-				}
-			});
-		}
-	</script> *@
-
-
-	<script>
-		function changePage(newPage) {
-			var pageSize = 5;  // Set your desired page size
-			var startIndex = (newPage - 1) * pageSize;
-			var endIndex = startIndex + pageSize;
-
-			document.querySelectorAll('#transactionsTable tbody tr').forEach(function (row, index) {
-				row.style.display = index >= startIndex && index < endIndex ? '' : 'none';
-			});
-
-			// Update the active class for pagination
-			document.querySelectorAll('.pagination li').forEach(function (li) {
-				li.classList.remove('active');
-			});
-			document.querySelector('.pagination li:nth-child(' + newPage + ')').classList.add('active');
-		}
-	</script>
-	@*     <script>
-	$(document).ready(function () {
-	$('#transactionsTable').bootstrapTable({
-	pagination: true,  // Enable pagination
-	search: true,  // Enable search bar
-	showColumns: true,  // Show/hide columns
-	showToggle: true,  // Show/hide table
-	showPaginationSwitch: true,  // Show/hide pagination
-	showRefresh: true,  // Show/hide refresh button
-	showFullscreen: true  // Show/hide fullscreen button
-	});
-	});
-	</script> *@
-
-
-	<!-- Bootstrap JS and jQuery (needed for Bootstrap functionality) -->
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
-</body>
-</html>
+            // Update the active class for pagination
+            document.querySelectorAll('.pagination li').forEach(function (li) {
+                li.classList.remove('active');
+            });
+            document.querySelector('.pagination li:nth-child(' + newPage + ')').classList.add('active');
+        }
+    </script>
+}

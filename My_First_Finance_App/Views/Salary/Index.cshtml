@@ -1,18 +1,18 @@
 ﻿@model IEnumerable<My_First_Finance_App.Models.Salary>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<h2>Salaries</h2>
-
-<a asp-action="Create" class="btn btn-primary">Add Salary</a>
-
+@{
+    int count = 0;
+}
+<h2>
+    Salaries
+    <a asp-action="Create" class="badge bg-success font-075">Add Salary</a>
+</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>Salary ID</th>
+            <th>No.</th>
+            <th>Income Source</th>
             <th>Amount</th>
-            <th>Timestamp</th>
-            <th>Income Source ID</th>
+            <th>Date</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -20,10 +20,10 @@
         @foreach (var salary in Model)
         {
             <tr>
-                <td>@salary.SalaryId</td>
-                <td>@salary.Amount</td>
-                <td>@salary.Timestamp</td>
+                <td>@(++count)</td>
                 <td>@salary.IncomeSource.Name</td>
+                <td>@salary.Amount.ToString("n0")</td>
+                <td>@salary.Timestamp.ToString("dd-MMM-yyyy hh:mm tt")</td>
                 <td>
                     <a asp-action="Edit" asp-route-salaryId="@salary.SalaryId">Edit</a> |
                     <a asp-action="Delete" asp-route-salaryId="@salary.SalaryId">Delete</a>
@@ -38,44 +38,46 @@
     <canvas id="salaryPieChart"></canvas>
 </div>
 
-<!-- JavaScript code to generate the pie chart -->
-<script>
-    var salaryData = {
-        labels: [],
-        datasets: [{
-            data: [],
-            backgroundColor: [],
-        }]
-    };
+@section scripts {
+    <!-- JavaScript code to generate the pie chart -->
+    <script>
+        var salaryData = {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [],
+            }]
+        };
 
-    // Populate data for the pie chart
-    @foreach (var salary in Model)
-    {
-        <text>
-            salaryData.labels.push('@salary.IncomeSource.Name');
-        salaryData.datasets[0].data.push(@salary.Amount);
-        salaryData.datasets[0].backgroundColor.push(getRandomColor());
-        </text>
-    }
+        // Populate data for the pie chart
+        @foreach (var salary in Model)
+        {
+            <text>
+                salaryData.labels.push('@salary.IncomeSource.Name');
+            salaryData.datasets[0].data.push(@salary.Amount);
+            salaryData.datasets[0].backgroundColor.push(getRandomColor());
+            </text>
+        }
 
-        var salaryPieChart = new Chart(document.getElementById('salaryPieChart'), {
-        type: 'pie',
-        data: salaryData,
-        options: {
-            title: {
-                display: true,
-                text: 'Salaries by Income Source'
+                                var salaryPieChart = new Chart(document.getElementById('salaryPieChart'), {
+            type: 'pie',
+            data: salaryData,
+            options: {
+                title: {
+                    display: true,
+                    text: 'Salaries by Income Source'
+                }
             }
-        }
-    });
+        });
 
-    // Function to generate a random color
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
+        // Function to generate a random color
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
-        return color;
-    }
-</script>
+    </script>
+}

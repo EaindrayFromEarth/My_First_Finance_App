@@ -6,14 +6,18 @@ using My_First_Finance_App.Services;
 public class TransactionController : Controller
 {
     private readonly ITransactionService _transactionService;
-	private readonly ISalaryService _salaryService;
-	public TransactionController(ITransactionService transactionService, ISalaryService salaryService)
+    private readonly ISalaryService _salaryService;
+    private readonly ICategoryService _categoryService;
+    private readonly IUserService _userService;
+    public TransactionController(ITransactionService transactionService, ISalaryService salaryService, ICategoryService categoryService, IUserService userService)
     {
         _transactionService = transactionService;
-		_salaryService = salaryService;
-	}
+        _salaryService = salaryService;
+        _categoryService = categoryService;
+        _userService = userService;
+    }
 
-	/*	public IActionResult Index(string sortOrder)
+    /*	public IActionResult Index(string sortOrder)
 		{
 			ViewBag.AmountSortOrder = string.IsNullOrEmpty(sortOrder) ? "asc" : sortOrder;
 
@@ -29,61 +33,58 @@ public class TransactionController : Controller
 			return View(transactions);
 		}*/
 
-	public IActionResult Index(int page = 1, int pageSize = 10)
-	{
-		// Adjust pageSize as needed, and you can pass it to the view if necessary
-		var transactions = _transactionService.GetAllTransactions(page, pageSize);
-		ViewBag.netBalance = _salaryService.AddAllSalary();
-		return View(transactions);
-	}
+    public IActionResult Index(int page = 1, int pageSize = 10)
+    {
+        // Adjust pageSize as needed, and you can pass it to the view if necessary
+        var transactions = _transactionService.GetAllTransactions(page, pageSize);
+        ViewBag.netBalance = _salaryService.AddAllSalary();
+        return View(transactions);
+    }
 
-	[HttpPost]
-	public IActionResult FilterTransactions(int selectedMonth, int selectedYear)
-	{
-		// Get filtered transactions based on selectedMonth and selectedYear
-		var filteredTransactions = _transactionService.FilterTransactions(selectedMonth, selectedYear);
+    [HttpPost]
+    public IActionResult FilterTransactions(int selectedMonth, int selectedYear)
+    {
+        // Get filtered transactions based on selectedMonth and selectedYear
+        var filteredTransactions = _transactionService.FilterTransactions(selectedMonth, selectedYear);
 
-		ViewBag.netBalance = _salaryService.AddAllSalary();
+        ViewBag.netBalance = _salaryService.AddAllSalary();
 
-		return View("Index", filteredTransactions);
-	}
+        return View("Index", filteredTransactions);
+    }
 
+    [HttpPost]
+    public IActionResult Search(string search)
+    {
+        var transactions = _transactionService.SearchTransactions(search);
+        return View("Index", transactions);
+    }
 
+    [HttpPost]
+    public IActionResult Filter(int selectedMonth, int selectedYear)
+    {
+        // Add logging to check if the action is being hit
+        Console.WriteLine($"Filter Action: Month = {selectedMonth}, Year = {selectedYear}");
 
-	[HttpPost]
-	public IActionResult Search(string search)
-	{
-		var transactions = _transactionService.SearchTransactions(search);
-		return View("Index", transactions);
-	}
+        var filteredTransactions = _transactionService.FilterTransactions(selectedMonth, selectedYear);
+        return View("Index", filteredTransactions);
+    }
 
-	[HttpPost]
-	public IActionResult Filter(int selectedMonth, int selectedYear)
-	{
-		// Add logging to check if the action is being hit
-		Console.WriteLine($"Filter Action: Month = {selectedMonth}, Year = {selectedYear}");
+    [HttpGet]
+    public IActionResult Details(int transactionId)
+    {
+        var transaction = _transactionService.GetTransactionById(transactionId);
 
-		var filteredTransactions = _transactionService.FilterTransactions(selectedMonth, selectedYear);
-		return View("Index", filteredTransactions);
-	}
+        if (transaction == null)
+            return NotFound();
 
+        return View(transaction);
+    }
 
-	[HttpGet]
-	public IActionResult Details(int transactionId)
-	{
-		var transaction = _transactionService.GetTransactionById(transactionId);
-
-		if (transaction == null)
-			return NotFound();
-
-		return View(transaction);
-	}
-
-
-
-	[HttpGet]
+    [HttpGet]
     public IActionResult Create()
     {
+        ViewBag.CategoryList = _categoryService.GetAllCategories();
+        ViewBag.Users = _userService.GetAllUsers();
         return View();
     }
 
@@ -97,46 +98,46 @@ public class TransactionController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-	[HttpGet]
-	//[Route("Edit/{transactionId}")]
-	public IActionResult Edit(int transactionId)
-	{
-		var transaction = _transactionService.GetTransactionById(transactionId);
+    [HttpGet]
+    //[Route("Edit/{transactionId}")]
+    public IActionResult Edit(int transactionId)
+    {
+        var transaction = _transactionService.GetTransactionById(transactionId);
 
-		if (transaction == null)
-		{
-			return NotFound();
-		}
+        if (transaction == null)
+        {
+            return NotFound();
+        }
 
-		return View(transaction);
-	}
+        return View(transaction);
+    }
 
-	[HttpPost]
-	public IActionResult Edit(Transaction transaction)
-	{
-		if (transaction == null)
-		{
-			return BadRequest();
-		}
+    [HttpPost]
+    public IActionResult Edit(Transaction transaction)
+    {
+        if (transaction == null)
+        {
+            return BadRequest();
+        }
 
-		_transactionService.UpdateTransaction(transaction);
-		return RedirectToAction(nameof(Index));
-	}
+        _transactionService.UpdateTransaction(transaction);
+        return RedirectToAction(nameof(Index));
+    }
 
-	[HttpGet]
-	public IActionResult Delete(int transactionId)
-	{
-		var transaction = _transactionService.GetTransactionById(transactionId);
+    [HttpGet]
+    public IActionResult Delete(int transactionId)
+    {
+        var transaction = _transactionService.GetTransactionById(transactionId);
 
-		if (transaction == null)
-		{
-			return NotFound();
-		}
+        if (transaction == null)
+        {
+            return NotFound();
+        }
 
-		return View(transaction);
-	}
+        return View(transaction);
+    }
 
-	[HttpPost, ActionName("Delete")]
+    [HttpPost, ActionName("Delete")]
     public IActionResult ConfirmDelete(int transactionId)
     {
         _transactionService.DeleteTransaction(transactionId);

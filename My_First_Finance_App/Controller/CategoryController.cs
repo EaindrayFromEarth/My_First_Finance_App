@@ -2,7 +2,6 @@
 using My_First_Finance_App.Models;
 using My_First_Finance_App.Services;
 
-
 public class CategoryController : Controller
 {
     private readonly ICategoryService _categoryService;

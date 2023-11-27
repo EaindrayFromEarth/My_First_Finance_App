@@ -1,51 +1,28 @@
 ﻿@model IEnumerable<My_First_Finance_App.Models.Category>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Categories</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-<body>
-
-
-    <p>
-        <a class="btn btn-success" asp-action="Create">Create New</a>
-    </p>
-    <div class="container mt-4">
-        <h2>Categories</h2>
-
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Category ID</th>
-                    <th>Name</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var category in Model)
-                {
-                    <tr>
-                        <td>@category.CategoryId</td>
-                        <td>@category.Name</td>
-                        <td>
-                            <a asp-controller="Category" asp-action="Details" asp-route-categoryId="@category.CategoryId" class="btn btn-info btn-sm">Details</a>
-                            <a asp-controller="Category" asp-action="Edit" asp-route-categoryId="@category.CategoryId" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-controller="Category" asp-action="Delete" asp-route-categoryId="@category.CategoryId" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-
-    </div>
-
-    <!-- Bootstrap JS and jQuery (needed for Bootstrap functionality) -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
-</body>
-</html>
+<h2>
+    Categories
+    <a asp-action="Create" class="badge bg-success font-075">Create New</a>
+</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Category ID</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.CategoryId</td>
+                <td>@category.Name</td>
+                <td>
+                    <a asp-controller="Category" asp-action="Details" asp-route-categoryId="@category.CategoryId" class="btn btn-info btn-sm">Details</a>
+                    <a asp-controller="Category" asp-action="Edit" asp-route-categoryId="@category.CategoryId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-controller="Category" asp-action="Delete" asp-route-categoryId="@category.CategoryId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

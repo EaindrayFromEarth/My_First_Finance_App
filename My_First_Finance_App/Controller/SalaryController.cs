@@ -5,7 +5,7 @@ using My_First_Finance_App.Services;
 public class SalaryController : Controller
 {
     private readonly ISalaryService _salaryService;
-    private readonly IIncomeSourceService _incomeSourceService; // Inject the IncomeSource service
+    private readonly IIncomeSourceService _incomeSourceService; 
 
     public SalaryController(ISalaryService salaryService, IIncomeSourceService incomeSourceService)
     {
@@ -14,11 +14,10 @@ public class SalaryController : Controller
     }
 
     public IActionResult Index()
-	{
-		var salaries = _salaryService.GetAllSalaries();
-		return View(salaries);
-	}
-
+    {
+        var salaries = _salaryService.GetAllSalaries();
+        return View(salaries);
+    }
 
     [HttpGet]
     public IActionResult Create()
@@ -29,53 +28,51 @@ public class SalaryController : Controller
     }
 
     [HttpPost]
-	public IActionResult Create(Salary salary)
-	{
-		if (salary == null)
-			return BadRequest();
+    public IActionResult Create(Salary salary)
+    {
+        if (salary == null)
+            return BadRequest();
 
-		_salaryService.AddSalary(salary);
-		return RedirectToAction(nameof(Index));
-	}
+        _salaryService.AddSalary(salary);
+        return RedirectToAction(nameof(Index));
+    }
 
-	[HttpGet]
-	public IActionResult Edit(int salaryId)
-	{
-		var salary = _salaryService.GetSalaryById(salaryId);
+    [HttpGet]
+    public IActionResult Edit(int salaryId)
+    {
+        var salary = _salaryService.GetSalaryById(salaryId);
 
-		if (salary == null)
-			return NotFound();
+        if (salary == null)
+            return NotFound();
 
-		return View(salary);
-	}
+        return View(salary);
+    }
 
-	[HttpPost]
-	public IActionResult Edit(Salary salary)
-	{
-		if (salary == null)
-			return BadRequest();
+    [HttpPost]
+    public IActionResult Edit(Salary salary)
+    {
+        if (salary == null)
+            return BadRequest();
 
-		_salaryService.UpdateSalary(salary);
-		return RedirectToAction(nameof(Index));
-	}
+        _salaryService.UpdateSalary(salary);
+        return RedirectToAction(nameof(Index));
+    }
 
-	[HttpGet]
-	public IActionResult Delete(int salaryId)
-	{
-		var salary = _salaryService.GetSalaryById(salaryId);
+    [HttpGet]
+    public IActionResult Delete(int salaryId)
+    {
+        var salary = _salaryService.GetSalaryById(salaryId);
 
-		if (salary == null)
-			return NotFound();
+        if (salary == null)
+            return NotFound();
 
-		return View(salary);
-	}
+        return View(salary);
+    }
 
-	[HttpPost, ActionName("Delete")]
-	public IActionResult ConfirmDelete(int salaryId)
-	{
-		_salaryService.DeleteSalary(salaryId);
-		return RedirectToAction(nameof(Index));
-	}
-
-
+    [HttpPost, ActionName("Delete")]
+    public IActionResult ConfirmDelete(int salaryId)
+    {
+        _salaryService.DeleteSalary(salaryId);
+        return RedirectToAction(nameof(Index));
+    }
 }
