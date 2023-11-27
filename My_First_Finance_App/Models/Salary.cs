@@ -10,7 +10,7 @@ namespace My_First_Finance_App.Models
 		public decimal Amount { get; set; }
 		public DateTime Timestamp { get; set; }
 
-		[ForeignKey("IncomeSource")] 
+		[ForeignKey("IncomeSource")]     
 		public int IncomeSourceId { get; set; }
 		public IncomeSource IncomeSource { get; set; }
 	}

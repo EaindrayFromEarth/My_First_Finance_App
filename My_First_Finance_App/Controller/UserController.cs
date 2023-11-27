@@ -22,34 +22,24 @@ public class UserController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login()
+    public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
-    public IActionResult Login(User model)
+    public IActionResult Create(User user)
     {
         if (ModelState.IsValid)
         {
-            // Perform authentication logic here
-            var user = _userService.GetUserByUsername(model.Username);
+            // You might want to perform additional validation here
+            _userService.CreateUser(user);
 
-            if (user != null)
-            {
-                // Authentication success
-                // Redirect to user profile or dashboard
-                return RedirectToAction("ProfileDetails", new { userId = user.UserId });
-            }
-            else
-            {
-                // Authentication failed
-                ModelState.AddModelError(string.Empty, "Invalid username or password");
-            }
+            return RedirectToAction(nameof(Index)); // Assuming you have an Index action in UserController
         }
 
-        // If we reach here, there was an issue with the login
-        return View(model);
+        // If we reach here, there was an issue with the user creation
+        return View(user);
     }
 
     [HttpGet]

@@ -13,14 +13,11 @@
 	Debug.WriteLine("Total Pages: " + totalPages);
 }
 
-
-@{
-	ViewBag.Title = "Calculate Savings";
-}
-
 <h2>Calculated Savings</h2>
+<h3 style="color: green;">Total Balance: @ViewBag.netBalance</h3>
 
-<p>Savings: @ViewBag.Savings</p>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -67,32 +64,35 @@
 
 
 
-		<div class="form-row">
-			<div class="form-group col-md-3">
-				<label for="month">Select Month:</label>
-				<select class="form-control" id="month">
-					@for (int i = 1; i <= 12; i++)
-					{
-						<option value="@i">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
-					}
-				</select>
-			</div>
+		<!-- Filtering Form -->
+		<form asp-controller="Transaction" asp-action="FilterTransactions" method="post">
+			<div class="form-row">
+				<div class="form-group col-md-3">
+					<label for="month">Select Month:</label>
+					<select class="form-control" id="month" name="selectedMonth">
+						@for (int i = 1; i <= 12; i++)
+						{
+							<option value="@i">@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+						}
+					</select>
+				</div>
 
-			<div class="form-group col-md-3">
-				<label for="year">Select Year:</label>
-				<select class="form-control" id="year">
-					@for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
-					{
-						<option value="@i">@i</option>
-					}
-				</select>
-			</div>
+				<div class="form-group col-md-3">
+					<label for="year">Select Year:</label>
+					<select class="form-control" id="year" name="selectedYear">
+						@for (int i = DateTime.Now.Year; i >= DateTime.Now.Year - 5; i--)
+						{
+							<option value="@i">@i</option>
+						}
+					</select>
+				</div>
 
-
-			<div class="form-group col-md-2">
-				<button class="btn btn-primary mt-4" onclick="applyFilter()">Apply Filter</button>
+				<div class="form-group col-md-2">
+					<button type="submit" class="btn btn-primary mt-4">Apply Filter</button>
+				</div>
 			</div>
-		</div>
+		</form>
+
 
 		<p>
 			<a class="btn btn-success" data-toggle="table" asp-action="Create">Create New Transaction</a>
@@ -294,8 +294,28 @@
 		});
 	</script>
 
+@* 	<script>
+		document.getElementById('applyFilterBtn').addEventListener('click', function () {
+			var selectedMonth = document.getElementById('month').value;
+			var selectedYear = document.getElementById('year').value;
+			console.log(`Selected Month: ${selectedMonth}, Selected Year: ${selectedYear}`);
 
-	<script>
+			// Make an AJAX request to filter transactions
+			fetch('@Url.Action("FilterTransactions", "Transaction")', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest'
+				},
+				body: JSON.stringify({ selectedMonth, selectedYear })
+			})
+				.then(response => response.text())
+				.then(data => {
+					document.getElementById('transactionTableContainer').innerHTML = data;
+				});
+		});
+	</script> *@
+	@* 	<script>
 		function applyFilter() {
 			var selectedMonth = document.getElementById('month').value;
 			var selectedYear = document.getElementById('year').value;
@@ -313,7 +333,7 @@
 				}
 			});
 		}
-	</script>
+	</script> *@
 
 
 	<script>

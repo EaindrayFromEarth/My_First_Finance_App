@@ -10,6 +10,7 @@ namespace My_First_Finance_App.Services
         void UpdateUser(User user);
         void DeleteUser(int userId);
         IEnumerable<User> GetAllUsers();
+        void CreateUser(User user);
     }
 
 }

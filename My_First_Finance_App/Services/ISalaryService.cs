@@ -10,5 +10,7 @@ namespace My_First_Finance_App.Services
 		void AddSalary(Salary salary);
 		void UpdateSalary(Salary salary);
 		void DeleteSalary(int salaryId);
+
+		decimal AddAllSalary();
 	}
 }

@@ -6,34 +6,46 @@ using My_First_Finance_App.Services;
 public class TransactionController : Controller
 {
     private readonly ITransactionService _transactionService;
-
-    public TransactionController(ITransactionService transactionService)
+	private readonly ISalaryService _salaryService;
+	public TransactionController(ITransactionService transactionService, ISalaryService salaryService)
     {
         _transactionService = transactionService;
-    }
+		_salaryService = salaryService;
+	}
 
-/*	public IActionResult Index(string sortOrder)
-	{
-		ViewBag.AmountSortOrder = string.IsNullOrEmpty(sortOrder) ? "asc" : sortOrder;
-
-		var transactions = _transactionService.GetAllTransactions();
-
-		// Handle sorting
-		transactions = sortOrder switch
+	/*	public IActionResult Index(string sortOrder)
 		{
-			"desc" => transactions.OrderByDescending(t => t.Amount),
-			_ => transactions.OrderBy(t => t.Amount),
-		};
+			ViewBag.AmountSortOrder = string.IsNullOrEmpty(sortOrder) ? "asc" : sortOrder;
 
-		return View(transactions);
-	}*/
+			var transactions = _transactionService.GetAllTransactions();
+
+			// Handle sorting
+			transactions = sortOrder switch
+			{
+				"desc" => transactions.OrderByDescending(t => t.Amount),
+				_ => transactions.OrderBy(t => t.Amount),
+			};
+
+			return View(transactions);
+		}*/
 
 	public IActionResult Index(int page = 1, int pageSize = 10)
 	{
 		// Adjust pageSize as needed, and you can pass it to the view if necessary
 		var transactions = _transactionService.GetAllTransactions(page, pageSize);
-
+		ViewBag.netBalance = _salaryService.AddAllSalary();
 		return View(transactions);
+	}
+
+	[HttpPost]
+	public IActionResult FilterTransactions(int selectedMonth, int selectedYear)
+	{
+		// Get filtered transactions based on selectedMonth and selectedYear
+		var filteredTransactions = _transactionService.FilterTransactions(selectedMonth, selectedYear);
+
+		ViewBag.netBalance = _salaryService.AddAllSalary();
+
+		return View("Index", filteredTransactions);
 	}
 
 
@@ -43,6 +55,16 @@ public class TransactionController : Controller
 	{
 		var transactions = _transactionService.SearchTransactions(search);
 		return View("Index", transactions);
+	}
+
+	[HttpPost]
+	public IActionResult Filter(int selectedMonth, int selectedYear)
+	{
+		// Add logging to check if the action is being hit
+		Console.WriteLine($"Filter Action: Month = {selectedMonth}, Year = {selectedYear}");
+
+		var filteredTransactions = _transactionService.FilterTransactions(selectedMonth, selectedYear);
+		return View("Index", filteredTransactions);
 	}
 
 

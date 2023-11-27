@@ -12,5 +12,8 @@ namespace My_First_Finance_App.Services
         void UpdateTransaction(Transaction transaction);
         void DeleteTransaction(int transactionId);
 		IEnumerable<Transaction> GetAllTransactions(int page, int pageSize);
+
+		decimal GetTotalTransactionAmount();
+		public IEnumerable<Transaction> FilterTransactions(int selectedMonth, int selectedYear);
 	}
 }

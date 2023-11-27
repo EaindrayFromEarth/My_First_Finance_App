@@ -16,6 +16,13 @@ namespace My_First_Finance_App.Repositories
             return _context.Users.Find(userId);
         }
 
-        // Implement other user-related methods
+        public void CreateUser(User user)
+        {
+            if (user != null)
+            {
+                _context.Users.Add(user);
+                _context.SaveChanges();
+            }
+        }
     }
 }

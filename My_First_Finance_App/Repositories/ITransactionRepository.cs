@@ -15,7 +15,8 @@ namespace My_First_Finance_App.Repositories
         IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount);
 		IEnumerable<Transaction> GetAllTransactions(int page, int pageSize);
 		decimal CalculateSavings(DateTime startDate, DateTime endDate);
-       
+
+		decimal GetTotalTransactionAmount();
 
 	}
 

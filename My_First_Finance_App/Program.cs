@@ -26,7 +26,9 @@ builder.Services.AddScoped<ISalaryService, SalaryService>();
 builder.Services.AddScoped<ISalaryRepository, SalaryRepository>();
 builder.Services.AddScoped<IIncomeSourceService, IncomeSourceService>();
 builder.Services.AddScoped<IIncomeSourceRepository, IncomeSourceRepository>();
-
+builder.Services.AddScoped<TransactionRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddControllers();
 
 //builder.Services.AddControllersWithViews();

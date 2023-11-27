@@ -15,6 +15,11 @@ namespace My_First_Finance_App.Services
             _context = context;
         }
 
+        public void CreateUser(User user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
         public User GetUserById(int userId)
         {
             return _context.Users

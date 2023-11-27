@@ -38,7 +38,7 @@ namespace My_First_Finance_App.Repositories
 
 		public IEnumerable<Transaction> SearchTransactions(string search)
 		{
-			return _context.Transactions
+			var transition = _context.Transactions
 				.Include(t => t.User)
 				.Include(t => t.Category)
 				.Where(t =>
@@ -46,7 +46,18 @@ namespace My_First_Finance_App.Repositories
 					t.Category.Name.Contains(search)
 				// Add additional search criteria as needed
 				)
-				.ToList();
+				.ToList() ;
+			return transition;
+
+/*			return _context.Transactions
+				.Include(t => t.User)
+				.Include(t => t.Category)
+				.Where(t =>
+					t.User.Username.Contains(search) ||
+					t.Category.Name.Contains(search)
+				// Add additional search criteria as needed
+				)
+				.ToList();*/
 		}
 
 		public decimal CalculateSavings(DateTime startDate, DateTime endDate)
@@ -139,7 +150,14 @@ namespace My_First_Finance_App.Repositories
             throw new NotImplementedException();
         }
 
-		
+		public decimal GetTotalTransactionAmount()
+		{
+			// Calculate the total transaction amount
+			return GetAllTransactions().Sum(t => t.Amount);
+		}
+
+
+
 
 
 		/*        public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)

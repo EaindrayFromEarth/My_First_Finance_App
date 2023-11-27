@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<My_First_Finance_App.Models.Salary>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <h2>Salaries</h2>
 
@@ -30,3 +32,50 @@
         }
     </tbody>
 </table>
+
+<!-- Add a canvas for the pie chart -->
+<div style="width: 300px; height: 300px;">
+    <canvas id="salaryPieChart"></canvas>
+</div>
+
+<!-- JavaScript code to generate the pie chart -->
+<script>
+    var salaryData = {
+        labels: [],
+        datasets: [{
+            data: [],
+            backgroundColor: [],
+        }]
+    };
+
+    // Populate data for the pie chart
+    @foreach (var salary in Model)
+    {
+        <text>
+            salaryData.labels.push('@salary.IncomeSource.Name');
+        salaryData.datasets[0].data.push(@salary.Amount);
+        salaryData.datasets[0].backgroundColor.push(getRandomColor());
+        </text>
+    }
+
+        var salaryPieChart = new Chart(document.getElementById('salaryPieChart'), {
+        type: 'pie',
+        data: salaryData,
+        options: {
+            title: {
+                display: true,
+                text: 'Salaries by Income Source'
+            }
+        }
+    });
+
+    // Function to generate a random color
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>

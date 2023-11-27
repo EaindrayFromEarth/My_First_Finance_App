@@ -8,6 +8,7 @@ namespace My_First_Finance_App.Repositories
 	public class SalaryRepository : ISalaryRepository
 	{
 		private readonly ApplicationDbContext _context;
+		private readonly TransactionRepository _transactionRepository;
 
 		public SalaryRepository(ApplicationDbContext context)
 		{
@@ -45,5 +46,18 @@ namespace My_First_Finance_App.Repositories
 				_context.SaveChanges();
 			}
 		}
+
+		public decimal AddAllSalary()
+		{
+			// Calculate the total balance by summing up all salaries
+			decimal totalSalary = GetAllSalaries().Sum(s => s.Amount);
+
+			// Subtract total transaction amount to get the net balance
+			decimal totalTransactionAmount = _transactionRepository.GetTotalTransactionAmount();
+			decimal netBalance = totalSalary - totalTransactionAmount;
+
+			return netBalance;
+		}
+
 	}
 }

@@ -55,7 +55,23 @@ namespace My_First_Finance_App.Services
 		{
 			return _transactionRepository.CalculateSavings(startDate, endDate);
 		}
+		public decimal GetTotalTransactionAmount()
+		{
+			// Calculate the total transaction amount
+			return GetAllTransactions().Sum(t => t.Amount);
+		}
 
-    }
+		public IEnumerable<Transaction> FilterTransactions(int selectedMonth, int selectedYear)
+		{
+			var allTransactions = _transactionRepository.GetAllTransactions();
+
+			// Filter transactions based on selected month and year
+			var filteredTransactions = allTransactions
+				.Where(t => t.Date.Month == selectedMonth && t.Date.Year == selectedYear)
+				.ToList();
+
+			return filteredTransactions;
+		}
+	}
 
 }
