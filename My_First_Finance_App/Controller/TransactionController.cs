@@ -56,6 +56,7 @@ public class TransactionController : Controller
     public IActionResult Search(string search)
     {
         var transactions = _transactionService.SearchTransactions(search);
+        ViewBag.netBalance = _salaryService.AddAllSalary();
         return View("Index", transactions);
     }
 
@@ -88,13 +89,25 @@ public class TransactionController : Controller
         return View();
     }
 
+
     [HttpPost]
     public IActionResult Create(Transaction transaction)
     {
-        if (transaction == null)
-            return BadRequest();
+        // Existing code...
 
+        // Check net balance before allowing the creation of a new transaction
+        var netBalance = _salaryService.AddAllSalary(); // Assuming AddAllSalary returns the net balance
+
+        if (netBalance < 0)
+        {
+            // Net balance is negative, don't allow the creation of a new transaction
+            ModelState.AddModelError(string.Empty, "Cannot create a new transaction. Insufficient funds.");
+            return View(transaction);
+        }
+
+        // Continue with creating the transaction
         _transactionService.AddTransaction(transaction);
+
         return RedirectToAction(nameof(Index));
     }
 

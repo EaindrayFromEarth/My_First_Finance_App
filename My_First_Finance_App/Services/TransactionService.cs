@@ -6,7 +6,7 @@ namespace My_First_Finance_App.Services
 	public class TransactionService : ITransactionService
     {
         private readonly ITransactionRepository _transactionRepository;
-       // private readonly IUserService _userService;  // Add this
+       // private readonly IUserService _userService; 
 
         public TransactionService(ITransactionRepository transactionRepository)
         {
