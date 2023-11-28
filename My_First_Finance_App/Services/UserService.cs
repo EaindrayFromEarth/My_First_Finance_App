@@ -56,7 +56,7 @@ namespace My_First_Finance_App.Services
             }
         }
 
-        public IEnumerable<User> GetAllUsers() // Implement this method
+        public IEnumerable<User> GetAllUsers() 
         {
             return _context.Users.ToList();
         }

@@ -156,16 +156,6 @@ namespace My_First_Finance_App.Repositories
 			return GetAllTransactions().Sum(t => t.Amount);
 		}
 
-
-
-
-
-		/*        public IEnumerable<Transaction> GetTransactionsWithAmountGreaterThan(decimal amount)
-                {
-                    var sql = "SELECT * FROM Transactions WHERE Amount > @amount";
-                    return _context.Database.SqlQuery<Transaction>(sql, new SqlParameter("@amount", amount)).ToList();
-
-                }*/
 	}
 
 }

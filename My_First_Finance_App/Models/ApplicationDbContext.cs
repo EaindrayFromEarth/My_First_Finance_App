@@ -16,7 +16,7 @@ namespace My_First_Finance_App.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // Replace "YourConnectionStringHere" with your actual connection string
+           
                 string connectionString = "Server=.;Database=TestDb;User=sa;Password=sa@123;";
                 optionsBuilder.UseSqlServer(connectionString);
             }
@@ -44,11 +44,11 @@ namespace My_First_Finance_App.Models
 
 			modelBuilder.Entity<Salary>()
 	.Property(s => s.Amount)
-	.HasColumnType("decimal(18,2)"); // Adjust the precision and scale as needed
+	.HasColumnType("decimal(18,2)");
 
 			modelBuilder.Entity<Transaction>()
 				.Property(t => t.Amount)
-				.HasColumnType("decimal(18,2)"); // Adjust the precision and scale as needed
+				.HasColumnType("decimal(18,2)"); 
 
 		}
 		/*        protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -2,7 +2,7 @@
 using My_First_Finance_App.Models;
 using My_First_Finance_App.Services;
 
-//[Route("[controller]")]
+
 public class TransactionController : Controller
 {
     private readonly ITransactionService _transactionService;
@@ -16,23 +16,6 @@ public class TransactionController : Controller
         _categoryService = categoryService;
         _userService = userService;
     }
-
-    /*	public IActionResult Index(string sortOrder)
-		{
-			ViewBag.AmountSortOrder = string.IsNullOrEmpty(sortOrder) ? "asc" : sortOrder;
-
-			var transactions = _transactionService.GetAllTransactions();
-
-			// Handle sorting
-			transactions = sortOrder switch
-			{
-				"desc" => transactions.OrderByDescending(t => t.Amount),
-				_ => transactions.OrderBy(t => t.Amount),
-			};
-
-			return View(transactions);
-		}*/
-
     public IActionResult Index(int page = 1, int pageSize = 10)
     {
         // Adjust pageSize as needed, and you can pass it to the view if necessary
@@ -93,8 +76,7 @@ public class TransactionController : Controller
     [HttpPost]
     public IActionResult Create(Transaction transaction)
     {
-        // Existing code...
-
+        
         // Check net balance before allowing the creation of a new transaction
         var netBalance = _salaryService.AddAllSalary(); // Assuming AddAllSalary returns the net balance
 
@@ -112,7 +94,6 @@ public class TransactionController : Controller
     }
 
     [HttpGet]
-    //[Route("Edit/{transactionId}")]
     public IActionResult Edit(int transactionId)
     {
         var transaction = _transactionService.GetTransactionById(transactionId);

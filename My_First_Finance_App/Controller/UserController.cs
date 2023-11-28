@@ -38,7 +38,6 @@ public class UserController : Controller
             return Redirect("/"); // Assuming you have an Index action in UserController
         }
 
-        // If we reach here, there was an issue with the user creation
         return View(user);
     }
 
@@ -89,6 +88,6 @@ public class UserController : Controller
     public IActionResult ConfirmDelete(int userId)
     {
         _userService.DeleteUser(userId);
-        return RedirectToAction(nameof(Index)); // Assuming you have an Index action in UserController
+        return RedirectToAction(nameof(Index)); 
     }
 }

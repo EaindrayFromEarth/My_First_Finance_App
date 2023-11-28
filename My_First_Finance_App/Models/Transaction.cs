@@ -27,7 +27,7 @@ namespace My_First_Finance_App.Models
 		public decimal SavingBalance { get; set; }
 
 
-        // Add these properties
+        
         [NotMapped] // This ensures that these properties are not mapped to the database
         public string Username => User?.Username;
 
